@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>YBA 仕入れAIナビ｜指し値 × 市場スプレッド診断</title>
+<style>
+:root{
+  --bg1:#fdf2f6; --bg2:#f5f8fc; --navy:#26405f; --navy2:#1d3149; --navy3:#122234;
+  --pink:#d98aa0; --pink2:#c86b86; --pink3:#b45573; --pinkbg:#fbeaf0; --pinkline:#efc9d6;
+  --blue:#6fa8cf; --bluebg:#eaf2f9; --text:#413a3d; --sub:#8b8189; --line:#ece2e7;
+  --gold:#c79a4b; --green:#4f9e7f; --greenbg:#e9f4ef; --red:#c8654f; --redbg:#fbeeea;
+  --amber:#c9963f; --amberbg:#fbf2e2;
+  --card:#ffffff; --shadow:0 10px 30px rgba(38,64,95,.10);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{overflow-x:hidden;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",YuGothic,"Noto Sans JP",sans-serif;
+  background:linear-gradient(158deg,#fdf1f5 0%,#f4f7fc 58%,#fdf1f5 100%);
+  color:var(--text); line-height:1.85; -webkit-font-smoothing:antialiased; min-height:100vh;
+}
+.layout{display:grid; grid-template-columns:244px 1fr; min-height:100vh;}
+
+/* ===== sidebar ===== */
+.side{background:linear-gradient(178deg,#1d3149,#122234); color:#cfdcea; padding:24px 0 18px; display:flex; flex-direction:column; position:sticky; top:0; height:100vh;}
+.slogo{padding:0 22px 18px;}
+.slogo .m{font-size:19px; font-weight:800; letter-spacing:.05em; color:#eaa9bd; white-space:nowrap;}
+.slogo .m b{background:linear-gradient(135deg,#f0a7bd,#c86b86); -webkit-background-clip:text; background-clip:text; color:transparent; font-weight:800;}
+.slogo .l{font-size:9.5px; color:#9fb0c2; letter-spacing:.12em; margin-top:5px;}
+.nav{flex:1; margin-top:6px;}
+.ni{display:flex; align-items:center; gap:12px; padding:12px 22px; font-size:13px; font-weight:700; color:#c3cfdc; cursor:pointer; border-left:3px solid transparent; transition:.15s;}
+.ni svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; flex:none;}
+.ni:hover{background:rgba(255,255,255,.05); color:#fff;}
+.ni.on{background:linear-gradient(90deg,rgba(200,107,134,.30),rgba(200,107,134,.04)); color:#fff; border-left-color:#e79ab2;}
+.sfoot{padding:14px 22px 0; border-top:1px solid rgba(255,255,255,.09); font-size:10px; color:#8fa1b3; line-height:1.8;}
+.sfoot b{color:#e7b6c4; font-weight:800;}
+.sbadge{display:inline-block; background:rgba(111,168,207,.18); color:#bcd7ec; border:1px solid rgba(111,168,207,.35); border-radius:999px; padding:3px 10px; font-size:9.5px; font-weight:800; letter-spacing:.06em; margin-top:8px;}
+
+/* ===== mobile top ===== */
+.mtop{display:none;}
+
+/* ===== main ===== */
+.main{padding:0 0 70px; min-width:0;}
+.hero{padding:26px 34px 0; position:relative;}
+.eyebrow{font-size:10.5px; color:var(--pink2); font-weight:800; letter-spacing:.24em;}
+.hero h1{font-size:clamp(21px,2.5vw,29px); color:var(--navy2); letter-spacing:.03em; margin-top:3px; line-height:1.35;}
+.hero .sub{font-size:12.5px; margin-top:6px; max-width:640px; color:var(--sub);}
+.wrap{padding:22px 34px 0;}
+.view{display:none;} .view.on{display:block; animation:fade .25s ease;}
+@keyframes fade{from{opacity:0; transform:translateY(6px);}to{opacity:1; transform:none;}}
+
+/* cards & forms */
+.card{background:var(--card); border-radius:20px; box-shadow:var(--shadow); padding:24px 26px; margin-bottom:20px; border:1px solid rgba(255,255,255,.6);}
+.card h2{font-size:15px; color:var(--navy2); letter-spacing:.03em; display:flex; align-items:center; gap:9px; margin-bottom:4px;}
+.card h2 .dot{width:8px; height:8px; border-radius:50%; background:var(--pink2); flex:none; box-shadow:0 0 0 4px var(--pinkbg);}
+.card .lead{font-size:12px; color:var(--sub); margin-bottom:16px;}
+.frow{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:13px;}
+label.fl{display:block; font-size:11px; font-weight:800; color:var(--navy); margin-bottom:5px; letter-spacing:.02em;}
+select,input[type=text],input[type=number],textarea{
+  width:100%; border:1.6px solid #e7dce3; border-radius:12px; padding:11px 13px; font-size:14px; color:var(--navy2);
+  font-family:inherit; background:#fffdfe; transition:.15s; appearance:none;
+}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23c86b86' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat:no-repeat; background-position:right 12px center; padding-right:34px;}
+select:focus,input:focus,textarea:focus{outline:none; border-color:var(--pink); box-shadow:0 0 0 3px rgba(217,138,160,.16);}
+.rankrow{display:flex; gap:8px; flex-wrap:wrap;}
+.rankbtn{flex:1; min-width:64px; border:1.6px solid #e7dce3; background:#fffdfe; border-radius:12px; padding:9px 6px; text-align:center; cursor:pointer; transition:.15s;}
+.rankbtn b{display:block; font-size:14px; font-weight:800; color:var(--navy2);}
+.rankbtn span{font-size:9.5px; color:var(--sub);}
+.rankbtn.on{border-color:var(--pink2); background:var(--pinkbg); box-shadow:0 4px 12px rgba(200,107,134,.16);}
+.rankbtn.on b{color:var(--pink3);}
+.cta{display:inline-flex; align-items:center; gap:9px; background:linear-gradient(135deg,#c86b86,#b45573); color:#fff; border:none; border-radius:999px; padding:14px 34px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; box-shadow:0 10px 24px rgba(180,85,115,.34); letter-spacing:.04em; transition:.15s;}
+.cta:hover{transform:translateY(-1px); box-shadow:0 14px 28px rgba(180,85,115,.42);}
+.cta:active{transform:translateY(0);}
+.cta svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2.2;}
+.ghost{background:#fff; color:var(--pink2); border:1.6px solid var(--pinkline); border-radius:999px; padding:11px 22px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit;}
+.ghost:hover{background:var(--pinkbg);}
+.ctarow{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:20px;}
+
+/* result: spread */
+.spread{display:grid; grid-template-columns:1fr auto 1fr; gap:0; align-items:stretch; margin-top:6px;}
+.mkt{background:var(--bg2); border-radius:16px; padding:18px 18px 14px;}
+.mkt.buy{background:var(--bluebg); border:1.5px solid #d3e3f0;}
+.mkt.sell{background:var(--greenbg); border:1.5px solid #cfe6da;}
+.mkt .cap{font-size:10.5px; font-weight:800; letter-spacing:.12em; color:var(--sub); display:flex; align-items:center; gap:6px;}
+.mkt.buy .cap{color:#4a7fa5;} .mkt.sell .cap{color:#3f8168;}
+.mkt table{width:100%; border-collapse:collapse; margin-top:10px;}
+.mkt td{font-size:12px; padding:6px 2px; border-bottom:1px dashed rgba(0,0,0,.07);}
+.mkt td.v{text-align:right; font-weight:800; color:var(--navy2); white-space:nowrap;}
+.mkt tr.best td{color:var(--navy2);} .mkt tr.best td.v{color:var(--pink3);}
+.mkt .tag{display:inline-block; font-size:9px; font-weight:800; padding:1px 7px; border-radius:999px; margin-left:6px; vertical-align:middle;}
+.tag.lo{background:#dbeafe; color:#2f6ca8;} .tag.hi{background:#d7efe4; color:#2f7d5f;}
+.arrow{display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 14px; color:var(--pink2);}
+.arrow svg{width:30px; height:30px; fill:none; stroke:currentColor; stroke-width:2;}
+.arrow .amt{font-size:10px; font-weight:800; color:var(--sub); margin-top:4px; white-space:nowrap; text-align:center;}
+.verdict{margin-top:18px; border-radius:16px; padding:18px 20px; display:flex; gap:16px; align-items:flex-start;}
+.verdict.good{background:var(--greenbg); border:1.5px solid #bfe3d2;}
+.verdict.ok{background:var(--bluebg); border:1.5px solid #cfe0ee;}
+.verdict.mid{background:var(--amberbg); border:1.5px solid #ecd9a9;}
+.verdict.no{background:var(--redbg); border:1.5px solid #eccabf;}
+.vmark{font-size:34px; font-weight:800; line-height:1; flex:none;}
+.verdict.good .vmark{color:var(--green);} .verdict.ok .vmark{color:var(--blue);}
+.verdict.mid .vmark{color:var(--amber);} .verdict.no .vmark{color:var(--red);}
+.vbody h3{font-size:16px; color:var(--navy2); letter-spacing:.02em;}
+.vbody p{font-size:12.5px; color:var(--text); margin-top:4px;}
+.kpis{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin-top:16px;}
+.kpi{background:var(--bg1); border-radius:14px; padding:13px 15px; text-align:center;}
+.kpi .k{font-size:10px; color:var(--sub); font-weight:800; letter-spacing:.04em;}
+.kpi .v{font-size:20px; font-weight:800; color:var(--navy2); margin-top:3px; letter-spacing:.01em;}
+.kpi .v small{font-size:11px; color:var(--sub); font-weight:800;}
+.kpi.hl{background:linear-gradient(135deg,#fbeaf0,#f6dbe4);}
+.kpi.hl .v{color:var(--pink3);}
+.notes{margin-top:16px; display:flex; flex-direction:column; gap:8px;}
+.note{display:flex; gap:9px; font-size:12px; color:var(--text); align-items:flex-start;}
+.note .ic{flex:none; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; margin-top:1px;}
+.note.dr .ic{background:var(--pinkbg); color:var(--pink3);}
+.note.wa .ic{background:var(--amberbg); color:var(--amber);}
+.note.cf .ic{background:var(--bluebg); color:var(--blue);}
+.conf{display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; padding:4px 12px; border-radius:999px; margin-top:2px;}
+.conf.h{background:var(--greenbg); color:#3f8168;} .conf.m{background:var(--amberbg); color:var(--amber);} .conf.l{background:#f0eef0; color:var(--sub);}
+
+/* list feature */
+.tabtoggle{display:flex; gap:0; background:#f2e9ee; border-radius:14px; padding:4px; margin-bottom:16px; max-width:420px;}
+.tabtoggle button{flex:1; border:none; background:none; padding:9px 8px; font-size:12.5px; font-weight:800; color:var(--sub); border-radius:11px; cursor:pointer; font-family:inherit;}
+.tabtoggle button.on{background:#fff; color:var(--pink3); box-shadow:0 3px 10px rgba(180,85,115,.14);}
+.tbl-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:14px; border:1px solid var(--line);}
+table.grid{width:100%; border-collapse:collapse; font-size:12.5px; min-width:760px;}
+table.grid th{background:var(--navy2); color:#e7eef5; font-weight:700; font-size:11px; padding:10px 10px; text-align:left; letter-spacing:.02em; white-space:nowrap; position:sticky; top:0;}
+table.grid td{padding:10px 10px; border-bottom:1px solid var(--line); vertical-align:middle;}
+table.grid tr:nth-child(even) td{background:#fcf7f9;}
+table.grid td.num{text-align:right; font-weight:800; color:var(--navy2); white-space:nowrap;}
+table.grid td.name b{color:var(--navy2);} table.grid td.name span{font-size:10.5px; color:var(--sub); display:block;}
+.pill{display:inline-block; font-size:10.5px; font-weight:800; padding:3px 10px; border-radius:999px; white-space:nowrap;}
+.pill.a{background:var(--greenbg); color:#3f8168;} .pill.b{background:var(--bluebg); color:#3a76a3;}
+.pill.c{background:var(--amberbg); color:var(--amber);} .pill.d{background:#f0eef0; color:var(--sub);}
+.foot-row td{background:var(--pinkbg)!important; font-weight:800;}
+.listsum{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:12px; margin:16px 0 4px;}
+textarea.paste{min-height:120px; font-size:13px; line-height:1.7; font-family:"SF Mono",Menlo,Consolas,monospace;}
+.hint{font-size:11px; color:var(--sub); margin-top:6px; line-height:1.7;}
+
+/* browser view */
+.searchbar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;}
+.searchbar input{max-width:320px;}
+.chips{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:14px;}
+.chip{border:1.4px solid var(--pinkline); background:#fff; color:var(--pink2); border-radius:999px; padding:6px 14px; font-size:11.5px; font-weight:800; cursor:pointer;}
+.chip.on{background:var(--pink2); color:#fff; border-color:var(--pink2);}
+
+/* logic view */
+.logic h3{font-size:13.5px; color:var(--pink3); margin:18px 0 6px; letter-spacing:.02em;}
+.logic p,.logic li{font-size:13px; color:var(--text); line-height:1.9;}
+.logic ul{margin:4px 0 4px 20px;} .logic li{margin-bottom:5px;}
+.logic .box{background:var(--bg2); border-radius:14px; padding:14px 18px; margin:10px 0; border-left:4px solid var(--blue);}
+.logic .box.warn{border-left-color:var(--amber); background:var(--amberbg);}
+.logic code{background:#f3eaef; color:var(--pink3); padding:2px 7px; border-radius:6px; font-size:12px; font-weight:700;}
+.disclaimer{font-size:11px; color:var(--sub); margin-top:14px; line-height:1.8; border-top:1px solid var(--line); padding-top:12px;}
+
+/* misc */
+.err{background:var(--redbg); border:1.5px solid #eccabf; color:var(--red); border-radius:14px; padding:14px 18px; font-size:13px; font-weight:700; margin-top:14px; display:none;}
+.err.on{display:block;}
+#dbgbox{display:none; position:fixed; left:0; right:0; bottom:0; max-height:38vh; overflow:auto; background:#1d2430; color:#8effa1; font:11px/1.5 monospace; padding:10px 14px; z-index:9998; white-space:pre-wrap;}
+#escape{position:fixed; right:12px; top:12px; z-index:2147483647; background:#c8654f; color:#fff; border:none; border-radius:999px; padding:7px 14px; font-size:11px; font-weight:800; cursor:pointer; display:none;}
+
+/* responsive */
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr;}
+  .side{display:none;}
+  .mtop{display:flex; align-items:center; justify-content:space-between; background:linear-gradient(178deg,#1d3149,#122234); padding:14px 18px; position:sticky; top:0; z-index:40;}
+  .mtop .m{font-size:16px; font-weight:800; color:#eaa9bd; letter-spacing:.06em;}
+  .mtop .mn{display:flex; gap:4px;}
+  .mtop .mn button{background:rgba(255,255,255,.08); color:#cfdcea; border:none; border-radius:9px; padding:7px 9px; font-size:10.5px; font-weight:800; font-family:inherit; cursor:pointer;}
+  .mtop .mn button.on{background:#c86b86; color:#fff;}
+  .hero{padding:18px 18px 0;} .wrap{padding:16px 18px 0;}
+  .card{padding:18px 16px; border-radius:16px;}
+  .spread{grid-template-columns:1fr; gap:12px;}
+  .arrow{flex-direction:row; padding:6px 0;} .arrow svg{transform:rotate(90deg); width:26px; height:26px;}
+}
+@media(max-width:420px){
+  .kpi .v{font-size:17px;} .rankbtn{min-width:0;}
+}
+</style>
+</head>
+<body>
+<button id="escape" onclick="document.body.innerHTML='<div style=padding:40px;font-family:sans-serif>再読み込みしてください</div>';location.reload();">⟳ 復帰</button>
+
+<div class="layout">
+  <!-- ===== sidebar ===== -->
+  <aside class="side">
+    <div class="slogo">
+      <div class="m">◆ <b>YBA 仕入れナビ</b></div>
+      <div class="l">AI SOURCING · POWERED BY MERONE</div>
+    </div>
+    <nav class="nav" id="nav">
+      <div class="ni on" data-v="spread"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>市場スプレッド診断</div>
+      <div class="ni" data-v="bid"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>指し値提案（リスト）</div>
+      <div class="ni" data-v="browse"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>相場ブラウザ</div>
+      <div class="ni" data-v="logic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>ロジック・使い方</div>
+    </nav>
+    <div class="sfoot">
+      仕入れ市場（YBA落札相場）と<br>販売市場（実売想定）の<b>差額＝粗利</b>を可視化。<br>相場は実落札データに基づく試算です。
+      <div class="sbadge">DATA · YBA落札 850件+</div>
+    </div>
+  </aside>
+
+  <!-- ===== mobile top ===== -->
+  <div class="mtop">
+    <div class="m">◆ YBA 仕入れAIナビ</div>
+    <div class="mn" id="mnav">
+      <button class="on" data-v="spread">スプレッド</button>
+      <button data-v="bid">指し値</button>
+      <button data-v="browse">相場</button>
+      <button data-v="logic">使い方</button>
+    </div>
+  </div>
+
+  <!-- ===== main ===== -->
+  <main class="main">
+    <div class="hero">
+      <div class="eyebrow">YBA SOURCING INTELLIGENCE</div>
+      <h1 id="heroTitle">どの市場でいくらで仕入れ → どこでいくらで売れる</h1>
+      <div class="sub" id="heroSub">商品タイトルと商品ランクを入れるだけ。YBAの落札相場と販売市場の実売想定から、粗利・ROI・推奨指し値までを一枚で。</div>
+    </div>
+
+    <div class="wrap">
+
+      <!-- ============ VIEW: SPREAD ============ -->
+      <section class="view on" id="v-spread">
+        <div class="card">
+          <h2><span class="dot"></span>商品を入力</h2>
+          <div class="lead">ブランド・品目・ランクを選ぶと、仕入れ市場と販売市場の相場を横並びで診断します。</div>
+          <div class="frow">
+            <div>
+              <label class="fl">ブランド</label>
+              <input type="text" id="s_brand" list="brandlist" placeholder="例）シャネル / CHANEL" autocomplete="off">
+              <datalist id="brandlist"></datalist>
+            </div>
+            <div>
+              <label class="fl">大分類</label>
+              <select id="s_maj"></select>
+            </div>
+            <div>
+              <label class="fl">品目</label>
+              <select id="s_cat"></select>
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <label class="fl">商品ランク（状態）</label>
+            <div class="rankrow" id="s_rank">
+              <div class="rankbtn" data-r="S"><b>S</b><span>新品・現行</span></div>
+              <div class="rankbtn on" data-r="A"><b>A</b><span>美品</span></div>
+              <div class="rankbtn" data-r="B"><b>B</b><span>良品・並</span></div>
+              <div class="rankbtn" data-r="C"><b>C</b><span>使用感・難</span></div>
+            </div>
+          </div>
+          <div class="frow" style="margin-top:14px;">
+            <div>
+              <label class="fl">仕入れ市場（会場・形態）</label>
+              <select id="s_buymkt"></select>
+            </div>
+            <div>
+              <label class="fl">販売市場</label>
+              <select id="s_sellmkt"></select>
+            </div>
+          </div>
+          <div class="ctarow">
+            <button class="cta" id="s_go"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg>スプレッドを診断する</button>
+            <button class="ghost" id="s_sample">サンプルで見る</button>
+          </div>
+          <div class="err" id="s_err"></div>
+        </div>
+        <div id="s_result"></div>
+      </section>
+
+      <!-- ============ VIEW: BID LIST ============ -->
+      <section class="view" id="v-bid">
+        <div class="card">
+          <h2><span class="dot"></span>商品リストから指し値を一括提案</h2>
+          <div class="lead">YBA出品リストの行を貼り付けると、各商品の推奨指し値・想定売値・粗利・ROI・買い判定を一覧で返します。</div>
+          <div class="tabtoggle" id="bidtab">
+            <button class="on" data-m="paste">貼り付け入力</button>
+            <button data-m="form">1点ずつ入力</button>
+          </div>
+
+          <div id="bid-paste">
+            <label class="fl">リストを貼り付け（1行1商品）</label>
+            <textarea class="paste" id="b_text" placeholder="ブランド, 品目, ランク, 点数
+CHANEL, ジャケット・ブルゾン, A, 1
+LOUIS VUITTON, スニーカー, B, 1
+MONCLER, ダウンジャケット・コート, A, 1"></textarea>
+            <div class="hint">区切りは「カンマ」「タブ」「全角スペース」いずれもOK。順番は <b>ブランド → 品目 → ランク(S/A/B/C) → 点数</b>。点数は省略可（既定1）。<br>Excelの出品リストからブランド・品目列をそのままコピペできます。</div>
+          </div>
+
+          <div id="bid-form" style="display:none;">
+            <div class="tbl-scroll">
+              <table class="grid" id="b_editgrid">
+                <thead><tr><th style="min-width:150px">ブランド</th><th style="min-width:150px">品目</th><th style="min-width:110px">ランク</th><th style="min-width:70px">点数</th><th style="width:40px"></th></tr></thead>
+                <tbody id="b_editbody"></tbody>
+              </table>
+            </div>
+            <button class="ghost" id="b_addrow" style="margin-top:12px;">＋ 行を追加</button>
+          </div>
+
+          <div class="ctarow">
+            <button class="cta" id="b_go"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>指し値を提案する</button>
+            <button class="ghost" id="b_sample">出品リスト例を読込</button>
+            <button class="ghost" id="b_csv" style="display:none;">CSVで書き出し</button>
+          </div>
+          <div class="err" id="b_err"></div>
+        </div>
+        <div id="b_result"></div>
+      </section>
+
+      <!-- ============ VIEW: BROWSE ============ -->
+      <section class="view" id="v-browse">
+        <div class="card">
+          <h2><span class="dot"></span>相場ブラウザ</h2>
+          <div class="lead">収録済みの YBA落札相場（ブランド × 品目）。数字は実落札の平均・レンジ・件数です。</div>
+          <div class="searchbar">
+            <input type="text" id="br_q" placeholder="ブランド・品目で絞り込み…">
+          </div>
+          <div class="chips" id="br_chips"></div>
+          <div class="tbl-scroll">
+            <table class="grid" id="br_table">
+              <thead><tr><th>ブランド</th><th>品目</th><th class="num">平均落札</th><th class="num">レンジ</th><th class="num">件数</th><th>高値の特徴</th></tr></thead>
+              <tbody id="br_body"></tbody>
+            </table>
+          </div>
+          <div class="hint" id="br_count" style="margin-top:10px;"></div>
+        </div>
+      </section>
+
+      <!-- ============ VIEW: LOGIC ============ -->
+      <section class="view logic" id="v-logic">
+        <div class="card">
+          <h2><span class="dot"></span>このツールの計算ロジック</h2>
+
+          <h3>1. 仕入れ相場（YBA落札）</h3>
+          <p>ブランド × 品目ごとの<b>実落札の平均・最低・最高</b>を基準に、商品ランクで補正します。</p>
+          <div class="box">
+            ランク補正：<code>S ×1.35</code>（新品・現行）／<code>A ×1.12</code>（美品）／<code>B ×1.0</code>（並）／<code>C ×0.68</code>（使用感）<br>
+            補正後は必ず<b>実落札の最低〜最高レンジ内</b>に収めます（暴走防止）。
+          </div>
+
+          <h3>2. 販売市場の想定売値</h3>
+          <p>仕入れ相場に、価格帯別の実売倍率をかけて<b>メルカリ実売の想定値</b>を出します。高額品ほど倍率は小さく（＝利幅が薄く）なります。</p>
+          <div class="box">
+            実売倍率：<code>〜8千円 ×3.0</code>／<code>〜2万 ×2.4</code>／<code>〜5万 ×2.0</code>／<code>5万〜 ×1.7</code><br>
+            販売市場係数：メルカリ ×1.0／ラクマ ×0.95／ヤフオク ×0.9／リユース店頭 ×1.25
+          </div>
+
+          <h3>3. 推奨指し値（南雲式）</h3>
+          <p>想定売値から逆算した「これ以上出すと利益が薄くなる」上限ラインです。</p>
+          <div class="box">
+            <code>想定売値 5万円まで → 指し値＝想定売値 × 1/3</code><br>
+            <code>想定売値 5万円以上 → 指し値＝想定売値 × 1/2</code><br>
+            粗利 ＝ 想定売値 −（販売手数料10% ＋ サイズ別送料 ＋ 推奨指し値）
+          </div>
+
+          <h3>4. 買い判定（2軸）</h3>
+          <ul>
+            <li><b>利益（ROI）</b>：60%↑＝◎／40%↑＝○／20%↑＝△／それ未満＝見送り</li>
+            <li><b>落札難易度</b>：推奨指し値が相場に届くか（相場内／やや弱気／弱気）。相場より弱気＝利益は出るが競り負けやすい、の意味。</li>
+          </ul>
+
+          <div class="box warn">
+            <b>収録外のブランド・品目は数字を出しません。</b>勝手な推定で高値を出す事故を防ぐため、「メルカリで “ブランド名＋品目＋売り切れ＋新しい順” を2ページ確認」というリサーチ手順をご案内します。
+          </div>
+
+          <div class="disclaimer">
+            ※ 本ツールの数値は Merone × YBA の実落札データ（コート／ダウン／ブルゾン／ワンピース／パンツ／Tシャツ ほか 約850件）に基づく<b>試算</b>です。実際の相場は季節・会場・個体差で変動します（冬商戦前は高め・春は安め・大阪イベント日は高め など）。最終判断は現物確認とあわせてお願いします。<br>
+            ※ 販売市場の売値は「実売想定」であり保証値ではありません。高額品・型番モノはメルカリ売り切れ検索での実額確認を推奨します。
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- ===== bug report ===== -->
+<div id="bugL" style="position:fixed; left:12px; bottom:16px; z-index:59; background:rgba(255,255,255,.94); border:1px solid #dfe7ee; color:#8a97a5; font-size:10.5px; font-weight:800; border-radius:999px; padding:6px 13px; cursor:pointer; letter-spacing:.03em; box-shadow:0 4px 12px rgba(0,0,0,.06);">不具合を報告</div>
+<div id="bugM" style="position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(29,49,73,.55); display:none; align-items:center; justify-content:center; z-index:70; padding:24px;">
+  <div style="background:#fff; border-radius:20px; padding:22px 20px; max-width:360px; width:100%;">
+    <h3 style="font-size:14.5px; color:#1d3149; margin-bottom:8px;">不具合・気になったことを教えてください</h3>
+    <textarea id="bugT" placeholder="例）指し値が出ませんでした（iPhone / Safari）" style="min-height:100px;"></textarea>
+    <div style="display:flex; gap:8px; margin-top:12px;">
+      <button id="bugC" style="flex:1; border:none; border-radius:999px; padding:11px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; background:#eef2f6; color:#26405f;">閉じる</button>
+      <button id="bugS" style="flex:1; border:none; border-radius:999px; padding:11px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; background:linear-gradient(135deg,#c86b86,#b45573); color:#fff;">送信する</button>
+    </div>
+    <div id="bugD" style="display:none; font-size:12.5px; color:#b45573; font-weight:800; margin-top:10px; text-align:center;">届きました。ありがとうございます。すぐ確認します。</div>
+  </div>
+</div>
+
+<div id="dbgbox"></div>
+
+<script>
+"use strict";
+/* ================= debug logger / escape ================= */
+var DEBUG = new URLSearchParams(location.search).get("debug")==="1";
+function dbg(m){ if(!DEBUG) return; var b=document.getElementById("dbgbox"); if(b){ b.style.display="block"; b.textContent += m+"\n"; } }
+window.onerror=function(msg,src,ln,col){ var e=document.getElementById("escape"); if(e) e.style.display="block"; dbg("ERR: "+msg+" @"+ln+":"+col); return false; };
+
+/* ================= number helpers ================= */
+function yen(n){ if(n==null||isNaN(n)) return "—"; return "¥"+Math.round(n).toLocaleString("ja-JP"); }
+function pct(n){ if(n==null||isNaN(n)) return "—"; return Math.round(n)+"%"; }
+function kk(n){ if(n>=10000) return (Math.round(n/1000)/10)+"万"; return Math.round(n).toLocaleString(); }
+
+/* ================= brand aliases ================= */
+var ALIAS = {
+ "シャネル":"CHANEL","ルイヴィトン":"LOUIS VUITTON","ヴィトン":"LOUIS VUITTON","ルイ・ヴィトン":"LOUIS VUITTON","lv":"LOUIS VUITTON",
+ "エルメス":"HERMES","グッチ":"GUCCI","ディオール":"DIOR","クリスチャンディオール":"DIOR","christian dior":"DIOR",
+ "バーバリー":"BURBERRY","モンクレール":"MONCLER","プラダ":"PRADA","セリーヌ":"CELINE","フェンディ":"FENDI",
+ "バレンシアガ":"BALENCIAGA","ヴァレンティノ":"VALENTINO","バレンチノ":"VALENTINO","ヴァレンチノ":"VALENTINO",
+ "ロエベ":"LOEWE","マックスマーラ":"MAX MARA","max mara":"MAX MARA","イッセイミヤケ":"ISSEY MIYAKE",
+ "ロロピアーナ":"LORO PIANA","loro piana":"LORO PIANA","フェラガモ":"SALVATORE FERRAGAMO","サルヴァトーレフェラガモ":"SALVATORE FERRAGAMO",
+ "ヘルノ":"HERNO","ドルガバ":"DOLCE&GABBANA","ドルチェ&ガッバーナ":"DOLCE&GABBANA","ドルチェアンドガッバーナ":"DOLCE&GABBANA","d&g":"DOLCE&GABBANA",
+ "カナダグース":"CANADA GOOSE","ノースフェイス":"THE NORTH FACE","ザノースフェイス":"THE NORTH FACE","tnf":"THE NORTH FACE",
+ "シュプリーム":"SUPREME","ヴェルサーチ":"VERSACE","ベルサーチ":"VERSACE","プリーツプリーズ":"PLEATS PLEASE",
+ "コムデギャルソン":"COMME des GARCONS","ディースクエアード":"DSQUARED2","マルジェラ":"MARTIN MARGIELA","メゾンマルジェラ":"MARTIN MARGIELA",
+ "クロムハーツ":"CHROME HEARTS","ジバンシー":"GIVENCHY","ジバンシィ":"GIVENCHY","タトラス":"TATRAS","カナダ":"CANADA GOOSE"
+};
+function canonBrand(s){
+  if(!s) return "";
+  var t=(""+s).trim(); var low=t.toLowerCase();
+  if(ALIAS[t]) return ALIAS[t];
+  if(ALIAS[low]) return ALIAS[low];
+  return t.toUpperCase();
+}
+
+/* ================= category mapping (YBA品目 -> DBカテゴリ) ================= */
+var CATMAP = {
+ "ジャケット・ブルゾン":"シャケット・ブルゾン","ジャケット":"シャケット・ブルゾン","ブルゾン":"シャケット・ブルゾン","シャケット":"シャケット・ブルゾン",
+ "コート":"コート","スーツ・セットアップ":"スーツ・セットアップ","セットアップ":"スーツ・セットアップ",
+ "ダウンジャケット・コート":"ダウン","ダウン":"ダウン","ダウンジャケット":"ダウン",
+ "ワンピース":"ワンピース","Tシャツ":"Tシャツ","ポロシャツ":"Tシャツ","シャツ":"Tシャツ",
+ "パンツ":"パンツ","スカート":"パンツ","デニム":"パンツ",
+ "ニット・セーター":"ニット・セーター","カーディガン":"ニット・セーター","アンサンブル":"ニット・セーター","ベスト":"ニット・セーター","セーター":"ニット・セーター","ニット":"ニット・セーター",
+ "トップス":"ニット・セーター","キャミソール・チュニック":"ニット・セーター",
+ "パーカー":"パーカー","ジャージ・スウェット":"パーカー","スウェット":"パーカー",
+ "レザーシューズ":"靴","スニーカー":"靴","ブーツ":"靴","サンダル":"靴","パンプス":"靴","ローファー":"靴","スリッポン":"靴","靴":"靴","ドライビングシューズ":"靴",
+ "ショルダーバッグ":"バッグ","ハンドバッグ":"バッグ","リュック":"バッグ","ボストンバッグ":"バッグ","ウエストバッグ":"バッグ","セカンドバッグ":"バッグ","トートバッグ":"バッグ","バッグ":"バッグ",
+ "マフラー・ストール":"小物","カレ・スカーフ":"小物","帽子":"小物","ネクタイ":"小物","手袋":"小物","ベルト・バックル":"小物","小物":"小物","ストール":"小物"
+};
+
+/* ================= 送料（大分類ベース） ================= */
+var SHIP = { "アパレル":215, "毛皮":750, "靴":750, "バッグ":750, "小物":215, "時計":215, "その他":380 };
+function shipFor(maj, cat){
+  if(cat==="コート"||cat==="ダウン"||cat==="シャケット・ブルゾン"||cat==="スーツ・セットアップ") return 750;
+  return SHIP[maj]!=null ? SHIP[maj] : 380;
+}
+
+/* ================= 市場係数 ================= */
+var BUYMKT = [
+ {k:"apparel", label:"YBA アパレル単品（横浜）", f:1.00},
+ {k:"osaka",   label:"YBA アパレル単品（大阪・イベント日）", f:1.06},
+ {k:"box",     label:"YBA 箱山（ロット・1点換算）", f:0.72},
+ {k:"other",   label:"参考：一般オークション", f:1.14}
+];
+var SELLMKT = [
+ {k:"mercari", label:"メルカリ", f:1.00},
+ {k:"rakuma",  label:"ラクマ", f:0.95},
+ {k:"yahoo",   label:"ヤフオク", f:0.90},
+ {k:"store",   label:"リユース店頭・自社EC", f:1.25}
+];
+function buyMkt(k){ for(var i=0;i<BUYMKT.length;i++) if(BUYMKT[i].k===k) return BUYMKT[i]; return BUYMKT[0]; }
+function sellMkt(k){ for(var i=0;i<SELLMKT.length;i++) if(SELLMKT[i].k===k) return SELLMKT[i]; return SELLMKT[0]; }
+
+/* ================= YBA落札相場 DB ================= */
+/* rec: [brand, cat, avg, min, max, n, hi, lo] */
+var RAW = [
+ // ---- コート ----
+ ["BURBERRY","コート",15840,1000,41000,48,"メンズダッフル(ノバチェック)","薄手・使用感"],
+ ["MAX MARA","コート",36833,5500,123000,9,"襟元袖口ファーのロング","シンプル"],
+ ["ISSEY MIYAKE","コート",26750,12000,41000,4,"特殊デザイン","シンプル"],
+ ["GUCCI","コート",36571,20000,75000,5,"年代が新しい",""],
+ ["LOUIS VUITTON","コート",65500,8000,150000,7,"レザー","薄手"],
+ ["DIOR","コート",45917,1000,160000,8,"年代が新しい",""],
+ ["LORO PIANA","コート",78667,18000,260000,12,"カシミヤ・ファー付",""],
+ ["SALVATORE FERRAGAMO","コート",22375,12000,36000,8,"",""],
+ ["HERNO","コート",16800,13000,23000,5,"",""],
+ ["FENDI","コート",51545,20000,210000,11,"全体ミンク",""],
+ ["CELINE","コート",49875,17000,90000,8,"カシミヤ混ノーカラー","使用感"],
+ ["DOLCE&GABBANA","コート",55667,14000,108000,3,"毛皮部分使いロング","薄手"],
+ // ---- ダウン ----
+ ["BURBERRY","ダウン",32000,12000,62000,3,"新品未使用・大きいサイズ",""],
+ ["MONCLER","ダウン",73045,2000,175000,132,"CHANON・FRAGMENT","TURQUIN"],
+ ["CANADA GOOSE","ダウン",32519,10000,60000,27,"",""],
+ ["THE NORTH FACE","ダウン",13250,2000,24000,4,"","ダウンベスト"],
+ ["PRADA","ダウン",56333,14000,110000,6,"襟元フォックスファー",""],
+ ["SUPREME","ダウン",65333,20000,150000,3,"バーバリーとコラボ",""],
+ ["DOLCE&GABBANA","ダウン",8500,4000,13000,2,"","ナイロン薄手"],
+ ["TATRAS","ダウン",31000,25000,35000,4,"","薄手ジャケット"],
+ // ---- パーカー ----
+ ["LOUIS VUITTON","パーカー",76333,17000,170000,6,"モノグラム(タオル生地)",""],
+ ["BALENCIAGA","パーカー",38200,28000,46000,5,"コラボ・新ロゴ","ロゴなし白"],
+ ["MONCLER","パーカー",26333,18000,35000,3,"",""],
+ ["GUCCI","パーカー",29375,18000,50000,8,"コラボ",""],
+ ["CELINE","パーカー",55000,41000,77000,3,"カラフルロゴ",""],
+ ["VALENTINO","パーカー",19000,18000,20000,2,"",""],
+ ["LOEWE","パーカー",34000,34000,34000,1,"",""],
+ ["DIOR","パーカー",30667,25000,42000,3,"新デザイン",""],
+ ["SUPREME","パーカー",27500,23100,31900,2,"",""],
+ // ---- ワンピース ----
+ ["CHANEL","ワンピース",67978,7000,220000,20,"年代新しい・カシミヤ混","ヴィンテージ薄手"],
+ ["HERMES","ワンピース",52200,13000,101000,30,"年代新しい・カシミヤ/シルク",""],
+ ["LOUIS VUITTON","ワンピース",50545,7000,134000,11,"現行・年代新しい","スカート"],
+ ["VERSACE","ワンピース",21000,21000,21000,1,"",""],
+ ["ISSEY MIYAKE","ワンピース",45000,45000,45000,1,"",""],
+ ["DIOR","ワンピース",23333,7000,43000,3,"シルク花柄","薄手シャツワンピ"],
+ ["GUCCI","ワンピース",19000,2000,36000,9,"新品・シルク",""],
+ ["PLEATS PLEASE","ワンピース",20667,17000,25000,6,"ニットワンピ",""],
+ ["COMME des GARCONS","ワンピース",17667,13000,20000,3,"",""],
+ ["VALENTINO","ワンピース",22438,7500,33000,6,"","REDVALENTINO"],
+ ["PRADA","ワンピース",8000,8000,14100,2,"",""],
+ ["CELINE","ワンピース",25333,21000,34000,6,"シャツワンピ",""],
+ // ---- パンツ ----
+ ["DSQUARED2","パンツ",12500,12000,13000,2,"",""],
+ ["MARTIN MARGIELA","パンツ",14500,8000,21000,2,"",""],
+ ["GUCCI","パンツ",10563,6000,20000,8,"派手なラインパンツ","シンプル"],
+ ["FENDI","パンツ",14714,6000,22000,7,"ズッカ柄","シンプル"],
+ ["CHANEL","パンツ",40357,16000,150000,14,"",""],
+ ["HERMES","パンツ",15794,5500,46000,17,"サイドHライン","リネン混メンズ"],
+ ["LOUIS VUITTON","パンツ",30800,10000,85000,10,"新デザイン(22年)",""],
+ // ---- Tシャツ ----
+ ["GUCCI","Tシャツ",12167,6500,25000,9,"新作",""],
+ ["HERMES","Tシャツ",17265,6000,35000,17,"レアデザイン","シワあり"],
+ ["FENDI","Tシャツ",24599,20000,29000,2,"コラボ新作近い",""],
+ ["LOUIS VUITTON","Tシャツ",29784,5500,80000,17,"新作・シルク","年代物(2014等)"],
+ ["DIOR","Tシャツ",24807,2000,46000,13,"新デザイン・J'ADORE",""],
+ ["CHANEL","Tシャツ",51667,28000,88000,3,"新デザイン(22年)","白Vネック"],
+ ["BURBERRY","Tシャツ",10750,5000,15000,4,"新作ロゴT","ロゴなし"],
+ ["VALENTINO","Tシャツ",13750,7500,22000,4,"フロントロゴ花柄",""],
+ ["DOLCE&GABBANA","Tシャツ",9600,3000,15000,3,"全体ロゴ(メンズ)","無地"],
+ ["GIVENCHY","Tシャツ",10000,10000,10000,1,"",""],
+ // ---- シャケット・ブルゾン ----
+ ["CHANEL","シャケット・ブルゾン",137372,18000,770000,117,"ツイード・年代新しい","スーツジャケット"],
+ ["GUCCI","シャケット・ブルゾン",39425,8500,85000,20,"コラボ・ブルゾン","スーツジャケット"],
+ ["BALENCIAGA","シャケット・ブルゾン",40400,22000,76000,5,"中綿","薄手"],
+ ["LOUIS VUITTON","シャケット・ブルゾン",75857,4000,200000,21,"","スーツジャケット"],
+ ["HERMES","シャケット・ブルゾン",62410,8500,300000,28,"",""],
+ ["FENDI","シャケット・ブルゾン",67500,5000,180000,4,"毛皮ブルゾン",""],
+ ["CELINE","シャケット・ブルゾン",52364,20000,170000,11,"レザー",""],
+ ["LORO PIANA","シャケット・ブルゾン",63909,27000,180000,11,"ミンク",""],
+ ["DIOR","シャケット・ブルゾン",36093,3000,300000,43,"",""],
+ ["MONCLER","シャケット・ブルゾン",44050,32100,100000,3,"",""],
+ ["RED VALENTINO","シャケット・ブルゾン",81000,81000,81000,1,"",""],
+ // ---- ニット・セーター ----
+ ["CELINE","ニット・セーター",84500,69000,100000,2,"",""],
+ ["GUCCI","ニット・セーター",47500,47500,47500,1,"",""],
+ ["FENDI","ニット・セーター",27000,27000,27000,1,"",""],
+ ["CHROME HEARTS","ニット・セーター",54550,49100,60000,2,"",""],
+ ["LOUIS VUITTON","ニット・セーター",57000,57000,57000,1,"",""],
+ ["VERSACE","ニット・セーター",18000,18000,18000,1,"",""],
+ ["AMI","ニット・セーター",20000,20000,20000,1,"",""],
+ ["MARTIN MARGIELA","ニット・セーター",24000,24000,24000,1,"",""],
+ ["RICK OWENS","ニット・セーター",5500,5500,5500,1,"",""],
+ ["MAX MARA","ニット・セーター",14000,14000,14000,1,"",""],
+ // ---- スーツ・セットアップ ----
+ ["CHANEL","スーツ・セットアップ",96000,96000,96000,1,"",""],
+ ["ANTEPRIMA","スーツ・セットアップ",4600,4600,4600,1,"",""],
+ // ---- 靴 ----
+ ["LOUIS VUITTON","靴",50000,2600,120000,10,"ハイカットスニーカー","サンダル・パンプス"],
+ ["CHANEL","靴",55000,28100,112000,6,"ブーツ・ムートン","フラットシューズ"],
+ ["HERMES","靴",43000,33300,53000,4,"ブーツ","サンダル"],
+ ["GUCCI","靴",11000,11000,30000,2,"","サンダル"],
+ ["PRADA","靴",25000,25000,25000,1,"スニーカー",""],
+ ["DOLCE&GABBANA","靴",15000,15000,15000,1,"ブーツ",""],
+ ["CHRISTIAN LOUBOUTIN","靴",14100,10000,21000,4,"スニーカー","フラット"],
+ ["VALENTINO","靴",19000,17000,21000,2,"スニーカー・サンダル",""],
+ ["NIKE","靴",11000,11000,11000,1,"",""],
+ // ---- バッグ ----
+ ["HERMES","バッグ",40000,40000,40000,1,"ショルダー",""],
+ ["COACH","バッグ",14000,14000,14000,1,"ショルダー",""],
+ // ---- 小物 ----
+ ["LOUIS VUITTON","小物",18000,2180,28000,4,"ストール","マフラー"],
+ ["MONCLER","小物",19800,19800,19800,1,"マフラー",""],
+ ["GUCCI","小物",12800,4300,30000,3,"キャップ","マフラー"],
+ ["CHANEL","小物",15100,15000,15100,2,"ストール",""],
+ ["HERMES","小物",8000,8000,8000,1,"",""]
+];
+var DB={}, BRANDS={}, CATS={};
+(function(){
+  for(var i=0;i<RAW.length;i++){
+    var r=RAW[i], b=r[0], c=r[1];
+    if(!DB[b]) DB[b]={};
+    DB[b][c]={avg:r[2],min:r[3],max:r[4],n:r[5],hi:r[6],lo:r[7]};
+    BRANDS[b]=true; CATS[c]=true;
+  }
+})();
+
+/* ================= YBA公式タクソノミ（入力UI用） ================= */
+var TAXO = {
+ "アパレル":["ジャケット・ブルゾン","コート","スーツ・セットアップ","ダウンジャケット・コート","トップス","ワンピース","Tシャツ","ポロシャツ","シャツ","パンツ","スカート","ニット・セーター","カーディガン","アンサンブル","パーカー","ベスト","ジャージ・スウェット","キャミソール・チュニック","その他"],
+ "靴":["レザーシューズ","スニーカー","ブーツ","サンダル","パンプス","ローファー","スリッポン","その他"],
+ "小物":["マフラー・ストール","カレ・スカーフ","帽子","ネクタイ","手袋","ベルト・バックル","アクセサリー","財布・マネークリップ","その他"],
+ "バッグ":["ショルダーバッグ","ハンドバッグ","リュック","ボストンバッグ","ウエストバッグ","トートバッグ","その他"],
+ "毛皮":["コート","ショール","その他"],
+ "時計":["腕時計","その他"]
+};
+
+/* ================= コアエンジン ================= */
+var RANKF={S:1.35,A:1.12,B:1.00,C:0.68};
+function retailK(landed){
+  if(landed<=8000) return 3.0;
+  if(landed<=20000) return 2.4;
+  if(landed<=50000) return 2.0;
+  return 1.7;
+}
+/* returns null if no data (収録外) */
+function priceItem(brandRaw, hinmoku, rank, buymktK, sellmktK){
+  var brand=canonBrand(brandRaw);
+  var cat=CATMAP[hinmoku]||hinmoku;
+  var maj=majorOf(hinmoku);
+  var rec = DB[brand] && DB[brand][cat];
+  if(!rec) return {ok:false, brand:brand, cat:cat, maj:maj};
+  var rf=RANKF[rank]||1.0;
+  // 仕入れ相場（ランク補正・レンジclamp）
+  var landedBase = rec.avg*rf;
+  if(landedBase>rec.max) landedBase=rec.max;
+  if(landedBase<rec.min) landedBase=rec.min;
+  var bm=buyMkt(buymktK), sm=sellMkt(sellmktK);
+  var landed = Math.round(landedBase*bm.f);
+  // 想定売値
+  var k=retailK(landedBase);
+  var sellBase = landedBase*k;
+  var sell = Math.round(sellBase*sm.f);
+  // 南雲式 推奨指し値（想定売値ベース）
+  var ratio = sell<=50000 ? (1/3) : (1/2);
+  var bid = Math.round(sell*ratio /100)*100;
+  // コスト
+  var fee = Math.round(sell*0.10);
+  var ship = shipFor(maj,cat);
+  var profit = sell - fee - ship - bid;
+  var roi = bid>0 ? (profit/bid*100) : 0;
+  // 落札難易度（推奨指し値 vs 仕入れ相場）
+  var diffRatio = landed>0 ? bid/landed : 1;
+  var difficulty, diffClass;
+  if(diffRatio>=1.0){ difficulty="相場内・狙いやすい"; diffClass="a"; }
+  else if(diffRatio>=0.85){ difficulty="ほぼ相場・競れば取れる"; diffClass="b"; }
+  else if(diffRatio>=0.65){ difficulty="相場より弱気・競り負けやすい"; diffClass="c"; }
+  else { difficulty="弱気・ロット/難あり狙い向き"; diffClass="d"; }
+  // 買い判定（ROI主）
+  var verdict, vClass, vmark;
+  if(roi>=60 && diffRatio>=0.85){ verdict="積極的に狙う"; vClass="good"; vmark="◎"; }
+  else if(roi>=40){ verdict="妙味あり・指す価値"; vClass="ok"; vmark="○"; }
+  else if(roi>=20){ verdict="薄利・状態を精査"; vClass="mid"; vmark="△"; }
+  else { verdict="見送り・ロット狙い"; vClass="no"; vmark="×"; }
+  // 信頼度
+  var conf, confClass;
+  if(rec.n>=30){ conf="高（n="+rec.n+"）"; confClass="h"; }
+  else if(rec.n>=8){ conf="中（n="+rec.n+"）"; confClass="m"; }
+  else { conf="参考（n="+rec.n+"）"; confClass="l"; }
+  return {
+    ok:true, brand:brand, cat:cat, maj:maj, rank:rank, rec:rec,
+    landed:landed, landedBase:Math.round(landedBase), sell:sell, bid:bid,
+    fee:fee, ship:ship, profit:profit, roi:roi, k:k,
+    difficulty:difficulty, diffClass:diffClass, verdict:verdict, vClass:vClass, vmark:vmark,
+    conf:conf, confClass:confClass, buymkt:bm, sellmkt:sm
+  };
+}
+function majorOf(hinmoku){
+  for(var maj in TAXO){ if(TAXO[maj].indexOf(hinmoku)>=0) return maj; }
+  var c=CATMAP[hinmoku];
+  if(c==="靴") return "靴"; if(c==="バッグ") return "バッグ"; if(c==="小物") return "小物";
+  return "アパレル";
+}
+
+/* ================= research fallback ================= */
+function researchCard(brand, hinmoku){
+  return '<div class="card"><div class="verdict mid"><div class="vmark">?</div><div class="vbody">'
+   +'<h3>相場データ未収録：'+esc(brand)+' × '+esc(hinmoku)+'</h3>'
+   +'<p>この組み合わせは実落札データが無いため、勝手な数字は出しません。以下の手順で実額を確認してください。</p>'
+   +'</div></div>'
+   +'<div class="notes" style="margin-top:14px;">'
+   +'<div class="note cf"><span class="ic">1</span><div>メルカリで <b>「'+esc(brand)+' '+esc(hinmoku)+'」＋売り切れ＋新しい順</b>を2ページ確認し、上限・下限をつかむ</div></div>'
+   +'<div class="note cf"><span class="ic">2</span><div>販売中ライバル（写真・キーワードの強さ）と比較して想定売値を決める</div></div>'
+   +'<div class="note cf"><span class="ic">3</span><div>想定売値 × 1/3（5万以上は1/2）を上限指し値の目安に</div></div>'
+   +'</div></div>';
+}
+
+/* ================= HTML helpers ================= */
+function esc(s){ return (""+s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+
+/* ================= SPREAD view ================= */
+function renderSpread(res, brandRaw, hinmoku){
+  if(!res.ok){ return researchCard(canonBrand(brandRaw), hinmoku); }
+  // 仕入れ市場テーブル：全会場を出し、選択会場をbest表記なしで一覧
+  var landedBase = res.landedBase;
+  var buyRows="", cheapest=null;
+  for(var i=0;i<BUYMKT.length;i++){
+    var v=Math.round(landedBase*BUYMKT[i].f);
+    if(cheapest==null||v<cheapest.v) cheapest={v:v,label:BUYMKT[i].label};
+    buyRows+='<tr class="'+(BUYMKT[i].k===res.buymkt.k?'best':'')+'"><td>'+esc(BUYMKT[i].label)+(BUYMKT[i].k===res.buymkt.k?' <span class="tag lo">選択</span>':'')+'</td><td class="v">'+yen(v)+'</td></tr>';
+  }
+  var sellBase = landedBase*res.k;
+  var sellRows="", highest=null;
+  for(var j=0;j<SELLMKT.length;j++){
+    var s=Math.round(sellBase*SELLMKT[j].f);
+    if(highest==null||s>highest.v) highest={v:s,label:SELLMKT[j].label};
+    sellRows+='<tr class="'+(SELLMKT[j].k===res.sellmkt.k?'best':'')+'"><td>'+esc(SELLMKT[j].label)+(SELLMKT[j].k===res.sellmkt.k?' <span class="tag hi">選択</span>':'')+'</td><td class="v">'+yen(s)+'</td></tr>';
+  }
+  var spread = res.sell - res.landed;
+  var h='<div class="card">';
+  h+='<h2><span class="dot"></span>'+esc(res.brand)+' × '+esc(hinmoku)+'（ランク'+res.rank+'）</h2>';
+  h+='<div class="lead">仕入れ市場と販売市場の相場を横並びで表示。ハイライトが選択中の市場です。</div>';
+  h+='<div class="spread">';
+  h+='<div class="mkt buy"><div class="cap">▼ 仕入れ市場（YBA落札相場）</div><table>'+buyRows+'</table></div>';
+  h+='<div class="arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg><div class="amt">粗利<br>'+yen(spread)+'</div></div>';
+  h+='<div class="mkt sell"><div class="cap">▼ 販売市場（実売想定）</div><table>'+sellRows+'</table></div>';
+  h+='</div>';
+  // KPI
+  h+='<div class="kpis">';
+  h+='<div class="kpi"><div class="k">仕入れ相場</div><div class="v">'+yen(res.landed)+'</div></div>';
+  h+='<div class="kpi"><div class="k">想定売値</div><div class="v">'+yen(res.sell)+'</div></div>';
+  h+='<div class="kpi hl"><div class="k">推奨指し値</div><div class="v">'+yen(res.bid)+'</div></div>';
+  h+='<div class="kpi"><div class="k">想定粗利</div><div class="v">'+yen(res.profit)+'</div></div>';
+  h+='<div class="kpi"><div class="k">ROI</div><div class="v">'+pct(res.roi)+'</div></div>';
+  h+='</div>';
+  // verdict
+  h+='<div class="verdict '+res.vClass+'"><div class="vmark">'+res.vmark+'</div><div class="vbody">';
+  h+='<h3>'+res.verdict+'</h3>';
+  h+='<p>推奨指し値 <b>'+yen(res.bid)+'</b> で仕入れ→'+esc(res.sellmkt.label)+'で <b>'+yen(res.sell)+'</b> 想定。手数料10%＋送料'+yen(res.ship)+'を引いて粗利 <b>'+yen(res.profit)+'</b>（ROI '+pct(res.roi)+'）。</p>';
+  h+='<p style="margin-top:6px;">落札難易度：<span class="pill '+res.diffClass+'">'+res.difficulty+'</span></p>';
+  h+='</div></div>';
+  // notes
+  h+='<div class="notes">';
+  if(res.rec.hi) h+='<div class="note dr"><span class="ic">↑</span><div>高値が付くのは <b>'+esc(res.rec.hi)+'</b>。該当すれば強気に。</div></div>';
+  if(res.rec.lo) h+='<div class="note wa"><span class="ic">↓</span><div>安くなるのは <b>'+esc(res.rec.lo)+'</b>。該当時は指し値を下げる。</div></div>';
+  h+='<div class="note cf"><span class="ic">◎</span><div>最安仕入れ：<b>'+esc(cheapest.label)+' '+yen(cheapest.v)+'</b> ／ 最高売値：<b>'+esc(highest.label)+' '+yen(highest.v)+'</b></div></div>';
+  h+='<div class="note cf"><span class="ic">i</span><div>データ信頼度 <span class="conf '+res.confClass+'">'+res.conf+'</span>（実落札 平均'+yen(res.rec.avg)+'／'+yen(res.rec.min)+'〜'+yen(res.rec.max)+'）</div></div>';
+  h+='</div>';
+  h+='</div>';
+  return h;
+}
+
+/* ================= BID LIST ================= */
+function parseList(text){
+  var out=[], lines=text.split(/\r?\n/);
+  for(var i=0;i<lines.length;i++){
+    var ln=lines[i].trim(); if(!ln) continue;
+    // skip header-ish
+    if(/^(No\.?|ブランド名?|品目)$/i.test(ln.replace(/[,\t　].*$/,""))) continue;
+    var parts=ln.split(/[,\t　]+/).map(function(s){return s.trim();}).filter(function(s){return s!=="";});
+    if(parts.length<2) continue;
+    // if first token is a pure number (No.), drop it
+    if(/^\d+$/.test(parts[0]) && parts.length>=3) parts.shift();
+    var brand=parts[0], hinmoku=parts[1];
+    var rank="B", ten=1;
+    for(var p=2;p<parts.length;p++){
+      if(/^[SABCＳＡＢＣ]$/i.test(parts[p])) rank=parts[p].toUpperCase().replace(/[ＳＡＢＣ]/g,function(z){return {"Ｓ":"S","Ａ":"A","Ｂ":"B","Ｃ":"C"}[z];});
+      else if(/^\d+$/.test(parts[p])) ten=parseInt(parts[p],10);
+    }
+    out.push({brand:brand,hinmoku:hinmoku,rank:rank,ten:ten});
+  }
+  return out;
+}
+var LAST_LIST=[];
+function renderBidList(items){
+  if(!items.length){ return '<div class="card"><div class="err on">読み取れる行がありませんでした。「ブランド, 品目, ランク」の形式でご入力ください。</div></div>'; }
+  var rows="", tBid=0, tSell=0, tProfit=0, okCount=0, ng=0;
+  LAST_LIST=[];
+  var bm=document.getElementById("b_buymkt"), sm=document.getElementById("b_sellmkt");
+  var bk=bm?bm.value:"apparel", sk=sm?sm.value:"mercari";
+  for(var i=0;i<items.length;i++){
+    var it=items[i];
+    var res=priceItem(it.brand,it.hinmoku,it.rank,bk,sk);
+    if(!res.ok){
+      ng++;
+      rows+='<tr><td class="name"><b>'+esc(canonBrand(it.brand))+'</b><span>'+esc(it.hinmoku)+' / '+it.rank+'</span></td>'
+        +'<td colspan="4" style="color:#c9963f; font-weight:700;">相場データ未収録 → リサーチ推奨</td>'
+        +'<td><span class="pill d">要確認</span></td></tr>';
+      LAST_LIST.push({brand:canonBrand(it.brand),hinmoku:it.hinmoku,rank:it.rank,sell:"",bid:"",profit:"",roi:"",verdict:"未収録"});
+      continue;
+    }
+    okCount++;
+    tBid+=res.bid*it.ten; tSell+=res.sell*it.ten; tProfit+=res.profit*it.ten;
+    rows+='<tr><td class="name"><b>'+esc(res.brand)+'</b><span>'+esc(it.hinmoku)+' / ランク'+res.rank+(it.ten>1?' ×'+it.ten:'')+'</span></td>'
+      +'<td class="num">'+yen(res.sell)+'</td>'
+      +'<td class="num" style="color:#b45573;">'+yen(res.bid)+'</td>'
+      +'<td class="num">'+yen(res.profit)+'</td>'
+      +'<td class="num">'+pct(res.roi)+'</td>'
+      +'<td><span class="pill '+res.vClass2()+'">'+res.vmark+' '+res.verdict+'</span></td></tr>';
+    LAST_LIST.push({brand:res.brand,hinmoku:it.hinmoku,rank:res.rank,sell:res.sell,bid:res.bid,profit:res.profit,roi:Math.round(res.roi),verdict:res.verdict});
+  }
+  var h='<div class="card">';
+  h+='<div class="listsum">';
+  h+='<div class="kpi"><div class="k">診断点数</div><div class="v">'+okCount+'<small>件</small></div></div>';
+  h+='<div class="kpi hl"><div class="k">合計 推奨指し値</div><div class="v">'+yen(tBid)+'</div></div>';
+  h+='<div class="kpi"><div class="k">合計 想定売上</div><div class="v">'+yen(tSell)+'</div></div>';
+  h+='<div class="kpi"><div class="k">合計 想定粗利</div><div class="v">'+yen(tProfit)+'</div></div>';
+  h+='<div class="kpi"><div class="k">全体ROI</div><div class="v">'+(tBid>0?pct(tProfit/tBid*100):"—")+'</div></div>';
+  h+='</div>';
+  if(ng>0) h+='<div class="hint" style="color:#c9963f;">※ '+ng+'件は相場未収録のためリサーチ推奨（合計には含みません）。</div>';
+  h+='<div class="tbl-scroll" style="margin-top:12px;"><table class="grid"><thead><tr><th>商品</th><th class="num">想定売値</th><th class="num">推奨指し値</th><th class="num">想定粗利</th><th class="num">ROI</th><th>判定</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+  h+='</div>';
+  return h;
+}
+/* attach vClass2 mapping to result via prototype-ish helper */
+function vClass2Of(v){ return v==="good"?"a":v==="ok"?"b":v==="mid"?"c":"d"; }
+
+/* ================= sample data ================= */
+var SAMPLE_LIST = [
+ {brand:"CHANEL",hinmoku:"ジャケット・ブルゾン",rank:"A",ten:1},
+ {brand:"LOUIS VUITTON",hinmoku:"スニーカー",rank:"B",ten:1},
+ {brand:"LOUIS VUITTON",hinmoku:"マフラー・ストール",rank:"A",ten:1},
+ {brand:"HERMES",hinmoku:"ショルダーバッグ",rank:"A",ten:1},
+ {brand:"MONCLER",hinmoku:"ダウンジャケット・コート",rank:"A",ten:1},
+ {brand:"BURBERRY",hinmoku:"コート",rank:"B",ten:1},
+ {brand:"GUCCI",hinmoku:"Tシャツ",rank:"B",ten:1},
+ {brand:"CELINE",hinmoku:"ニット・セーター",rank:"A",ten:1}
+];
+
+/* ================= UI wiring ================= */
+function $(id){ return document.getElementById(id); }
+function setView(v){
+  var views=["spread","bid","browse","logic"];
+  for(var i=0;i<views.length;i++){ var el=$("v-"+views[i]); if(el) el.classList.toggle("on", views[i]===v); }
+  var nis=document.querySelectorAll("#nav .ni"); for(var j=0;j<nis.length;j++) nis[j].classList.toggle("on", nis[j].getAttribute("data-v")===v);
+  var mbs=document.querySelectorAll("#mnav button"); for(var k=0;k<mbs.length;k++) mbs[k].classList.toggle("on", mbs[k].getAttribute("data-v")===v);
+  var titles={spread:["どの市場でいくらで仕入れ → どこでいくらで売れる","商品タイトルと商品ランクを入れるだけ。YBA落札相場と販売市場の実売想定から粗利・ROI・推奨指し値まで一枚で。"],
+    bid:["商品リスト → 指し値を一括提案","出品リストを貼り付けると、各商品の推奨指し値と想定粗利を一覧で返します。"],
+    browse:["相場ブラウザ","収録済みの YBA落札相場をブランド × 品目で確認できます。"],
+    logic:["計算ロジック・使い方","数字の出し方をすべて公開しています。"]};
+  if(titles[v]){ $("heroTitle").textContent=titles[v][0]; $("heroSub").textContent=titles[v][1]; }
+  if(v==="browse") renderBrowse();
+  window.scrollTo(0,0);
+}
+
+var SEL_RANK="A";
+function buildSelectors(){
+  // brand datalist
+  var dl=$("brandlist"), bs=Object.keys(BRANDS).sort(), html="";
+  for(var i=0;i<bs.length;i++) html+='<option value="'+esc(bs[i])+'">';
+  dl.innerHTML=html;
+  // major/cat cascade
+  var maj=$("s_maj"); var mh="";
+  for(var m in TAXO) mh+='<option value="'+esc(m)+'">'+esc(m)+'</option>';
+  maj.innerHTML=mh;
+  fillCat();
+  // markets
+  var bmk=$("s_buymkt"), smk=$("s_sellmkt"), bh="", sh="";
+  for(var a=0;a<BUYMKT.length;a++) bh+='<option value="'+BUYMKT[a].k+'">'+esc(BUYMKT[a].label)+'</option>';
+  for(var b=0;b<SELLMKT.length;b++) sh+='<option value="'+SELLMKT[b].k+'">'+esc(SELLMKT[b].label)+'</option>';
+  bmk.innerHTML=bh; smk.innerHTML=sh;
+}
+function fillCat(){
+  var maj=$("s_maj").value, cat=$("s_cat"), ch="";
+  var list=TAXO[maj]||[];
+  for(var i=0;i<list.length;i++) ch+='<option value="'+esc(list[i])+'">'+esc(list[i])+'</option>';
+  cat.innerHTML=ch;
+}
+
+/* browse */
+var BR_FILTER="";
+function renderBrowse(){
+  var chips=$("br_chips");
+  if(chips && !chips.getAttribute("data-built")){
+    var cs=Object.keys(CATS), ch='<span class="chip on" data-c="">すべて</span>';
+    var order=["シャケット・ブルゾン","コート","ダウン","パーカー","ワンピース","ニット・セーター","パンツ","Tシャツ","スーツ・セットアップ","靴","バッグ","小物"];
+    for(var i=0;i<order.length;i++){ if(CATS[order[i]]) ch+='<span class="chip" data-c="'+esc(order[i])+'">'+esc(order[i])+'</span>'; }
+    chips.innerHTML=ch; chips.setAttribute("data-built","1");
+    chips.onclick=function(e){ var t=e.target.closest(".chip"); if(!t) return;
+      var all=chips.querySelectorAll(".chip"); for(var k=0;k<all.length;k++) all[k].classList.remove("on"); t.classList.add("on");
+      BR_FILTER=t.getAttribute("data-c"); drawBrowse(); };
+  }
+  drawBrowse();
+}
+function drawBrowse(){
+  var q=($("br_q").value||"").trim().toLowerCase();
+  var rows=[], body=$("br_body");
+  for(var i=0;i<RAW.length;i++){
+    var r=RAW[i];
+    if(BR_FILTER && r[1]!==BR_FILTER) continue;
+    var hay=(r[0]+" "+r[1]).toLowerCase();
+    if(q && hay.indexOf(q)<0) continue;
+    rows.push(r);
+  }
+  rows.sort(function(a,b){ return b[2]-a[2]; });
+  var h="";
+  for(var j=0;j<rows.length;j++){ var r=rows[j];
+    h+='<tr><td class="name"><b>'+esc(r[0])+'</b></td><td>'+esc(r[1])+'</td><td class="num">'+yen(r[2])+'</td><td class="num" style="font-weight:600;color:#8b8189;">'+yen(r[3])+'〜'+yen(r[4])+'</td><td class="num">'+r[5]+'</td><td style="font-size:11px;color:#8b8189;">'+esc(r[6]||"—")+'</td></tr>';
+  }
+  body.innerHTML=h||'<tr><td colspan="6" style="text-align:center;color:#8b8189;padding:20px;">該当なし</td></tr>';
+  $("br_count").textContent="表示：" + rows.length + " 件 / 収録 " + RAW.length + " 組";
+}
+
+/* ================= init ================= */
+function init(){
+  buildSelectors();
+  // nav
+  $("nav").addEventListener("click",function(e){ var t=e.target.closest(".ni"); if(t) setView(t.getAttribute("data-v")); });
+  $("mnav").addEventListener("click",function(e){ var t=e.target.closest("button"); if(t) setView(t.getAttribute("data-v")); });
+  // rank
+  $("s_rank").addEventListener("click",function(e){ var t=e.target.closest(".rankbtn"); if(!t) return;
+    var all=$("s_rank").querySelectorAll(".rankbtn"); for(var i=0;i<all.length;i++) all[i].classList.remove("on"); t.classList.add("on"); SEL_RANK=t.getAttribute("data-r"); });
+  $("s_maj").addEventListener("change",fillCat);
+  // spread go
+  $("s_go").addEventListener("click",function(){
+    var err=$("s_err"); err.classList.remove("on");
+    var brand=$("s_brand").value.trim();
+    if(!brand){ err.textContent="ブランドを入力してください。"; err.classList.add("on"); return; }
+    var hinmoku=$("s_cat").value;
+    var res=priceItem(brand,hinmoku,SEL_RANK,$("s_buymkt").value,$("s_sellmkt").value);
+    $("s_result").innerHTML=renderSpread(res,brand,hinmoku);
+    $("s_result").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+  $("s_sample").addEventListener("click",function(){
+    $("s_brand").value="シャネル"; $("s_maj").value="アパレル"; fillCat(); $("s_cat").value="ジャケット・ブルゾン";
+    var all=$("s_rank").querySelectorAll(".rankbtn"); for(var i=0;i<all.length;i++) all[i].classList.toggle("on",all[i].getAttribute("data-r")==="A"); SEL_RANK="A";
+    $("s_go").click();
+  });
+  // bid tab
+  $("bidtab").addEventListener("click",function(e){ var t=e.target.closest("button"); if(!t) return;
+    var bs=$("bidtab").querySelectorAll("button"); for(var i=0;i<bs.length;i++) bs[i].classList.remove("on"); t.classList.add("on");
+    var m=t.getAttribute("data-m");
+    $("bid-paste").style.display = m==="paste"?"block":"none";
+    $("bid-form").style.display = m==="form"?"block":"none";
+    if(m==="form" && !$("b_editbody").children.length) addBidRow();
+  });
+  // bid market selectors (inject)
+  injectBidMarkets();
+  $("b_addrow").addEventListener("click",addBidRow);
+  $("b_go").addEventListener("click",runBid);
+  $("b_sample").addEventListener("click",function(){
+    var mode = $("bidtab").querySelector("button.on").getAttribute("data-m");
+    if(mode==="paste"){
+      var lines=SAMPLE_LIST.map(function(s){return s.brand+", "+s.hinmoku+", "+s.rank+", "+s.ten;});
+      $("b_text").value=lines.join("\n");
+    } else {
+      $("b_editbody").innerHTML=""; for(var i=0;i<SAMPLE_LIST.length;i++) addBidRow(SAMPLE_LIST[i]);
+    }
+    runBid();
+  });
+  $("b_csv").addEventListener("click",exportCSV);
+  // browse search
+  $("br_q").addEventListener("input",drawBrowse);
+  dbg("init ok · DB rows="+RAW.length+" brands="+Object.keys(BRANDS).length);
+}
+function injectBidMarkets(){
+  var host=$("bid-paste");
+  var wrap=document.createElement("div");
+  wrap.className="frow"; wrap.style.marginTop="14px";
+  var bh="",sh="";
+  for(var a=0;a<BUYMKT.length;a++) bh+='<option value="'+BUYMKT[a].k+'">'+esc(BUYMKT[a].label)+'</option>';
+  for(var b=0;b<SELLMKT.length;b++) sh+='<option value="'+SELLMKT[b].k+'">'+esc(SELLMKT[b].label)+'</option>';
+  wrap.innerHTML='<div><label class="fl">仕入れ市場</label><select id="b_buymkt">'+bh+'</select></div>'
+    +'<div><label class="fl">販売市場</label><select id="b_sellmkt">'+sh+'</select></div>';
+  host.parentNode.insertBefore(wrap, host.nextSibling);
+}
+function addBidRow(pre){
+  var tb=$("b_editbody"), tr=document.createElement("tr");
+  var maj=Object.keys(TAXO);
+  var hinOpts=""; for(var m in TAXO){ for(var i=0;i<TAXO[m].length;i++){ var hn=TAXO[m][i]; hinOpts+='<option value="'+esc(hn)+'"'+(pre&&pre.hinmoku===hn?' selected':'')+'>'+esc(m.slice(0,2))+'｜'+esc(hn)+'</option>'; } }
+  var rankOpts=""; ["S","A","B","C"].forEach(function(r){ rankOpts+='<option value="'+r+'"'+(pre&&pre.rank===r?' selected':(!pre&&r==="B"?' selected':''))+'>ランク'+r+'</option>'; });
+  tr.innerHTML='<td><input type="text" list="brandlist" class="be-brand" placeholder="ブランド" value="'+(pre?esc(pre.brand):'')+'"></td>'
+    +'<td><select class="be-hin">'+hinOpts+'</select></td>'
+    +'<td><select class="be-rank">'+rankOpts+'</select></td>'
+    +'<td><input type="number" class="be-ten" value="'+(pre&&pre.ten?pre.ten:1)+'" min="1" style="width:64px;"></td>'
+    +'<td><button class="be-del" style="border:none;background:none;color:#c8654f;font-size:16px;font-weight:800;cursor:pointer;">×</button></td>';
+  tr.querySelector(".be-del").onclick=function(){ tr.remove(); };
+  tb.appendChild(tr);
+}
+function collectFormRows(){
+  var out=[], trs=$("b_editbody").querySelectorAll("tr");
+  for(var i=0;i<trs.length;i++){
+    var b=trs[i].querySelector(".be-brand").value.trim();
+    if(!b) continue;
+    out.push({brand:b, hinmoku:trs[i].querySelector(".be-hin").value, rank:trs[i].querySelector(".be-rank").value, ten:parseInt(trs[i].querySelector(".be-ten").value,10)||1});
+  }
+  return out;
+}
+function runBid(){
+  var err=$("b_err"); err.classList.remove("on");
+  var mode=$("bidtab").querySelector("button.on").getAttribute("data-m");
+  var items = mode==="paste" ? parseList($("b_text").value) : collectFormRows();
+  if(!items.length){ err.textContent="商品が入力されていません。リストを貼り付けるか、行を追加してください。"; err.classList.add("on"); return; }
+  // decorate results with vClass2
+  var html=renderBidList(items.map(function(it){ return it; }));
+  $("b_result").innerHTML=html;
+  $("b_csv").style.display = LAST_LIST.length?"inline-block":"none";
+  $("b_result").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function exportCSV(){
+  if(!LAST_LIST.length) return;
+  var head=["ブランド","品目","ランク","想定売値","推奨指し値","想定粗利","ROI(%)","判定"];
+  var lines=[head.join(",")];
+  for(var i=0;i<LAST_LIST.length;i++){ var r=LAST_LIST[i];
+    lines.push([r.brand,r.hinmoku,r.rank,r.sell,r.bid,r.profit,r.roi,r.verdict].map(function(x){return '"'+(""+x).replace(/"/g,'""')+'"';}).join(","));
+  }
+  var blob=new Blob(["﻿"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"});
+  var a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="yba_shiine_teian.csv"; a.click();
+}
+
+/* patch: attach vClass2 to priceItem results (used in table) */
+(function(){
+  var orig=priceItem;
+  priceItem=function(){ var r=orig.apply(null,arguments); if(r && r.ok){ r.vClass2=function(){ return vClass2Of(r.vClass); }; } return r; };
+})();
+
+/* ===== boot with safety ===== */
+(function boot(){
+  try{ init(); }
+  catch(e){ dbg("BOOT ERR: "+(e&&e.message)); var esc2=$("escape"); if(esc2) esc2.style.display="block";
+    var host=$("s_result"); if(host) host.innerHTML='<div class="card"><div class="err on">読み込みでエラーが発生しました。ページを再読み込みしてください。（右上「復帰」ボタン）</div></div>'; }
+})();
+</script>
+
+<!-- ===== bug report logic ===== -->
+<script>
+(function(){
+  var U="https://inrvprlyobghviklulcv.supabase.co/rest/v1/ailab_notes";
+  var K="sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp";
+  var P=new URLSearchParams(location.search);
+  var demo=P.get("demo")==="1";
+  var M=document.getElementById("bugM");
+  document.getElementById("bugL").onclick=function(){ M.style.display="flex"; };
+  document.getElementById("bugC").onclick=function(){ M.style.display="none"; document.getElementById("bugD").style.display="none"; };
+  document.getElementById("bugS").onclick=function(){
+    var t=document.getElementById("bugT").value.trim();
+    if(!t){ document.getElementById("bugT").focus(); return; }
+    var btn=this; btn.disabled=true;
+    function done(){ document.getElementById("bugD").style.display="block"; document.getElementById("bugT").value=""; btn.disabled=false;
+      setTimeout(function(){ M.style.display="none"; document.getElementById("bugD").style.display="none"; },1800); }
+    if(demo){ done(); return; }
+    fetch(U,{method:"POST",headers:{apikey:K,Authorization:"Bearer "+K,"Content-Type":"application/json"},
+      body:JSON.stringify({member_id:"bug_yba-shiire-tool",member_name:"YBA仕入れナビ",mood:"バグ報告",worry:t,want:location.href.slice(0,180)+" ／ "+navigator.userAgent.slice(0,140)})})
+      .then(function(){ done(); }).catch(function(){ btn.disabled=false; alert("送信できませんでした。通信環境をご確認ください。"); });
+  };
+})();
+</script>
+</body>
+</html>
