@@ -426,13 +426,13 @@ MONCLER, ダウンジャケット・コート, A, 1"></textarea>
 
 <!-- ===== AIくみこ ヘルプウィジェット ===== -->
 <div id="kmLaunch" role="button" aria-label="AIくみこに聞く">
-  <div class="fa"><img src="img/face.png?v=1" alt="" onerror="this.remove()"></div>
+  <div class="fa"><img src="img/face.png?v=2" alt="" onerror="this.remove()"></div>
   <span class="pulse"></span>
   <div class="tx"><b>AIくみこに聞く</b><span>困ったらタップ♡</span></div>
 </div>
 <div id="kmPanel" aria-label="AIくみこ">
   <div id="kmHd">
-    <div class="av"><img src="img/face.png?v=1" alt="" onerror="this.remove()"></div>
+    <div class="av"><img src="img/face.png?v=2" alt="" onerror="this.remove()"></div>
     <div class="t"><b>AIくみこ</b><p>仕入れ・指し値・相場のお手伝い係</p></div>
     <button class="cl" id="kmClose" type="button" aria-label="閉じる">×</button>
   </div>
@@ -1225,7 +1225,7 @@ var HKEY="yba_km_hist_v1";
 var chat, inp, send, panel, launch, busy=false, hist=[], started=false;
 function nowTime(){ var d=new Date(); return ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2); }
 function saveHist(){ try{ localStorage.setItem(HKEY, JSON.stringify(hist.slice(-120))); }catch(e){} }
-function mkAv(){ var a=document.createElement("div"); a.className="sav"; var im=document.createElement("img"); im.src="img/face.png?v=1"; im.alt=""; im.onerror=function(){ im.remove(); }; a.appendChild(im); return a; }
+function mkAv(){ var a=document.createElement("div"); a.className="sav"; var im=document.createElement("img"); im.src="img/face.png?v=2"; im.alt=""; im.onerror=function(){ im.remove(); }; a.appendChild(im); return a; }
 function addBubble(who,text,noSave){
   var row=document.createElement("div"); row.className="kmrow "+who;
   if(who==="km"){ row.appendChild(mkAv()); }
@@ -1233,7 +1233,7 @@ function addBubble(who,text,noSave){
   var tok=/^\[\[IMG:([a-z]+)\]\]$/.exec(String(text));
   if(tok){
     bub.className="kmbub pic";
-    var pic=document.createElement("img"); pic.src="img/"+tok[1]+".png?v=1"; pic.alt="くみこのスタンプ";
+    var pic=document.createElement("img"); pic.src="img/"+tok[1]+".png?v=2"; pic.alt="くみこのスタンプ";
     pic.onload=function(){ chat.scrollTop=chat.scrollHeight; };
     pic.onerror=function(){ bub.className="kmbub"; bub.textContent="（スタンプを読み込めませんでした）"; };
     bub.appendChild(pic);
