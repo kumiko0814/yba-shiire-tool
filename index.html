@@ -178,6 +178,53 @@ textarea.paste{min-height:120px; font-size:13px; line-height:1.7; font-family:"S
 @media(max-width:420px){
   .kpi .v{font-size:17px;} .rankbtn{min-width:0;}
 }
+
+/* ===== AIくみこ ヘルプウィジェット ===== */
+#kmLaunch{position:fixed; right:16px; bottom:18px; z-index:61; display:flex; align-items:center; gap:9px; background:#fff; border:1px solid var(--pinkline); border-radius:999px; padding:7px 16px 7px 7px; box-shadow:0 10px 26px rgba(38,64,95,.20); cursor:pointer; transition:.15s;}
+#kmLaunch:hover{transform:translateY(-2px); box-shadow:0 14px 30px rgba(38,64,95,.28);}
+#kmLaunch .fa{width:40px; height:40px; border-radius:50%; overflow:hidden; flex:none; background:linear-gradient(135deg,#d98aa0,#c86b86); position:relative; border:2px solid #fff;}
+#kmLaunch .fa img{position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position:50% 26%;}
+#kmLaunch .pulse{position:absolute; top:3px; right:120px; width:11px; height:11px; background:#4f9e7f; border:2px solid #fff; border-radius:50%;}
+#kmLaunch .tx{line-height:1.25;}
+#kmLaunch .tx b{display:block; font-size:12.5px; font-weight:800; color:var(--navy2);}
+#kmLaunch .tx span{font-size:10px; color:var(--pink2); font-weight:800;}
+@keyframes kmpop{from{opacity:0; transform:translateY(22px) scale(.96);}to{opacity:1; transform:none;}}
+#kmPanel{position:fixed; right:16px; bottom:18px; z-index:80; width:372px; max-width:calc(100vw - 32px); height:582px; max-height:calc(100vh - 40px); background:#eef3f7; border-radius:22px; box-shadow:0 24px 64px rgba(38,64,95,.36); display:none; flex-direction:column; overflow:hidden; animation:kmpop .22s ease;}
+#kmPanel.on{display:flex;}
+#kmHd{background:linear-gradient(135deg,#1d3149,#c86b86); color:#fff; padding:13px 14px; display:flex; align-items:center; gap:10px; flex:none;}
+#kmHd .av{width:40px; height:40px; border-radius:50%; overflow:hidden; flex:none; position:relative; background:linear-gradient(135deg,#d98aa0,#c86b86); border:2px solid rgba(255,255,255,.55);}
+#kmHd .av img{position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position:50% 26%;}
+#kmHd .t{flex:1; min-width:0;}
+#kmHd .t b{font-size:15px; font-weight:800; letter-spacing:.02em;}
+#kmHd .t p{font-size:10px; color:#f3e2e9; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+#kmHd .cl{background:rgba(255,255,255,.18); border:none; color:#fff; width:30px; height:30px; border-radius:50%; font-size:17px; cursor:pointer; flex:none; font-family:inherit; line-height:1;}
+#kmNote{background:#e7edf2; color:#8a97a5; font-size:9px; text-align:center; padding:4px 8px; flex:none; letter-spacing:.02em; line-height:1.5;}
+#kmChat{flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:14px 12px 16px;}
+.kmrow{display:flex; margin-bottom:9px; align-items:flex-end; gap:6px;}
+.kmrow.me{justify-content:flex-end;}
+.kmrow .sav{width:27px; height:27px; border-radius:50%; overflow:hidden; flex:none; position:relative; background:linear-gradient(135deg,#d98aa0,#c86b86); border:1px solid #fff;}
+.kmrow .sav img{position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; object-position:50% 26%;}
+.kmbub{max-width:78%; padding:9px 12px; border-radius:15px; font-size:13.5px; line-height:1.7; word-break:break-word; white-space:pre-wrap;}
+.kmrow.km .kmbub{background:#fff; border:1px solid #dde5ec; border-bottom-left-radius:5px; color:#2a3948; box-shadow:0 1px 3px rgba(38,64,95,.05);}
+.kmrow.me .kmbub{background:#d3e6f6; border-bottom-right-radius:5px; color:#1c3048;}
+.kmbub.pic{padding:0; background:none; border:none; box-shadow:none; line-height:0;}
+.kmbub.pic img{max-width:118px; max-height:150px; display:block;}
+.kmrow.typing .kmbub{color:#9aa7b3; letter-spacing:.15em;}
+#kmChips{display:flex; gap:6px; overflow-x:auto; -webkit-overflow-scrolling:touch; padding:8px 12px; background:#eef3f7; flex:none; scrollbar-width:none;}
+#kmChips::-webkit-scrollbar{display:none;}
+#kmChips button{flex:none; background:#fff; border:1px solid #d6dfe7; color:#3d4f60; border-radius:999px; padding:7px 12px; font-size:11.5px; font-weight:700; cursor:pointer; font-family:inherit; white-space:nowrap;}
+#kmChips button:active{background:#f0f4f8;}
+#kmBar{display:flex; gap:8px; padding:9px 12px; background:#fff; border-top:1px solid #dde5ec; flex:none; align-items:flex-end;}
+#kmInp{flex:1; border:1.5px solid #d6dfe7; border-radius:18px; padding:9px 14px; font-size:16px; line-height:1.5; font-family:inherit; color:#2a3948; outline:none; resize:none; max-height:90px; background:#f6f9fb;}
+#kmInp:focus{border-color:var(--pink2); background:#fff;}
+#kmSend{background:linear-gradient(135deg,#d98aa0,#c86b86); color:#fff; border:none; border-radius:50%; width:40px; height:40px; font-size:16px; cursor:pointer; flex:none;}
+#kmSend:disabled{opacity:.45;}
+@media(max-width:640px){
+  #kmPanel{right:0; left:0; bottom:0; width:100%; max-width:100%; height:86vh; max-height:86vh; border-radius:20px 20px 0 0;}
+  #kmLaunch{right:12px; bottom:12px; padding:6px 14px 6px 6px;}
+  #kmLaunch .tx span{display:none;}
+  #kmLaunch .pulse{right:96px;}
+}
 </style>
 </head>
 <body>
@@ -375,6 +422,33 @@ MONCLER, ダウンジャケット・コート, A, 1"></textarea>
 
     </div>
   </main>
+</div>
+
+<!-- ===== AIくみこ ヘルプウィジェット ===== -->
+<div id="kmLaunch" role="button" aria-label="AIくみこに聞く">
+  <div class="fa"><img src="img/face.png?v=1" alt="" onerror="this.remove()"></div>
+  <span class="pulse"></span>
+  <div class="tx"><b>AIくみこに聞く</b><span>困ったらタップ♡</span></div>
+</div>
+<div id="kmPanel" aria-label="AIくみこ">
+  <div id="kmHd">
+    <div class="av"><img src="img/face.png?v=1" alt="" onerror="this.remove()"></div>
+    <div class="t"><b>AIくみこ</b><p>仕入れ・指し値・相場のお手伝い係</p></div>
+    <button class="cl" id="kmClose" type="button" aria-label="閉じる">×</button>
+  </div>
+  <div id="kmNote">※森川くみこのAIクローン（自動応答）です。数字は試算なので最終判断は現物とあわせてね</div>
+  <div id="kmChat"></div>
+  <div id="kmChips">
+    <button data-q="使い方おしえて">使い方おしえて</button>
+    <button data-q="指し値ってなに？">指し値ってなに？</button>
+    <button data-q="数字が出ないんだけど">数字が出ない</button>
+    <button data-q="高く売れるブランドは？">高く売れるブランドは？</button>
+    <button data-q="ランクの選び方は？">ランクの選び方</button>
+  </div>
+  <div id="kmBar">
+    <textarea id="kmInp" rows="1" placeholder="メッセージを入力" enterkeyhint="send"></textarea>
+    <button id="kmSend" type="button">➤</button>
+  </div>
 </div>
 
 <!-- ===== bug report ===== -->
@@ -1002,6 +1076,216 @@ function exportCSV(){
   try{ init(); }
   catch(e){ dbg("BOOT ERR: "+(e&&e.message)); var esc2=$("escape"); if(esc2) esc2.style.display="block";
     var host=$("s_result"); if(host) host.innerHTML='<div class="card"><div class="err on">読み込みでエラーが発生しました。ページを再読み込みしてください。（右上「復帰」ボタン）</div></div>'; }
+})();
+</script>
+
+<!-- ===== AIくみこ ヘルプウィジェット（ルールベース・LLM不使用・口調ソース=森川くみこ実LINEログ） ===== -->
+<script>
+(function(){
+"use strict";
+/* ---------- 応答エンジン ---------- */
+var KMH = (function(){
+  var _seq=0;
+  function pick(a){ _seq++; return a[(Math.floor(Math.random()*997)+_seq)%a.length]; }
+  function has(t,w){ for(var i=0;i<w.length;i++){ if(t.indexOf(w[i])>=0) return true; } return false; }
+
+  /* A. このツールの使い方（最優先・作業スタンプ） */
+  var TOOL=[
+    { k:["使い方","つかいかた","どう使","どうやって","はじめ","初めて","何から","なにから","最初","わからない","分からない","わかんない"],
+      a:[["ひかるさーん！このツールの使い方ですね、まかせてください☺️",
+          "やることは大きく2つだけです。\n① 市場スプレッド診断…商品を1点入れて『いくらで仕入れて・いくらで売れるか』を見る\n② 指し値提案…出品リストをまとめて貼って、指し値を一気に出す",
+          "まずは①で、入力欄の下の『サンプルで見る』を押してみてください。出方のイメージがつかめますよ🔰"]] },
+    { k:["スプレッド","市場スプレッド","1点","一点","単品","1品","一品"],
+      a:[["市場スプレッド診断は『この1点、買っていいの？』を確かめる画面です😊",
+          "ブランド・大分類・品目・ランクを選んで『スプレッドを診断する』を押すだけ。",
+          "仕入れ相場（YBAでいくらで買えるか）と想定売値（メルカリでいくらで売れそうか）が横並びで出て、粗利・ROI・おすすめの指し値まで出ますよ✨"]] },
+    { k:["指し値提案","さしね提案","リスト","一括","まとめて","複数","たくさん","出品リスト","csv","一覧で"],
+      a:[["指し値提案は、たくさんの商品をいっぺんに見たい時の画面です🔥",
+          "エクセルの出品リストから『ブランド』と『品目』の列をコピーして、貼り付け欄にそのまま貼るだけでOKです。",
+          "全部の推奨指し値・粗利・ROI・買い判定が一覧で出て、CSVでも書き出せます。迷ったら『出品リスト例を読込』を押してみてくださいね😊"]] },
+    { k:["ランク","状態ランク","sabc","s a b c","abc","どのランク","状態は","状態どれ"],
+      a:[["ランクは商品の状態のことです☺️ ざっくりこの4つで選んでください。",
+          "S＝新品みたい・現行のきれいなもの／A＝美品／B＝並・普通に使える／C＝使用感や難あり",
+          "迷ったらAかBで大丈夫です。ランクが上がるほど想定の相場も上がる仕組みになっています🔰"]] },
+    { k:["指し値って","指値って","さしねって","指し値の意味","指値の意味","いくら入れ","いくらで買","指し値の決め","指値どう","指し値どう","南雲"],
+      a:[["指し値は『いくらまでなら出して買うか』の上限のことですね😊",
+          "このツールの推奨指し値は、想定の売値から逆算して『これ以上出すと利益が薄くなるよ』というラインで出しています（5万円までは売値の約1/3、5万超は約1/2が目安）。",
+          "なので、推奨指し値までで落とせれば、ちゃんと利益が残るという見方でOKです🔥"]] },
+    { k:["数字が出ない","出てこない","出ない","未収録","収録外","データがない","相場データ未","でない","反応しない","こわれ","壊れ","バグって"],
+      a:[["大丈夫です、それは壊れてるわけじゃないんですよ☺️",
+          "そのブランド×品目がまだ相場データに入っていない時は、あえて数字を出さないようにしています（あてずっぽうの値段で損してほしくないので。。）。",
+          "その時は画面の案内どおり、メルカリで『ブランド名＋品目＋売り切れ＋新しい順』を2ページ見て、いくらで売れてるか確かめてみてくださいね🔍"]] },
+    { k:["roi","粗利","あらり","利益","儲か","もうか","どれくらい儲"],
+      a:[["ROIは『指し値に対してどれくらい利益が出るか』の割合です😊",
+          "粗利は、想定の売値から〈販売手数料10%＋送料＋指し値〉を引いた、手元に残るお金のこと。",
+          "ざっくり、ROIが高い＝効率よく稼げる、と思ってもらえればOK。判定の◎○△が目安になりますよ✨"]] },
+    { k:["落札難易度","弱気","相場内","競り負け","競り","難易度","落とせる","落ちる"],
+      a:[["落札難易度は『その指し値で本当に落とせそうか』の目安です☺️",
+          "『相場内』なら普通に狙えます。『弱気』は、利益は出るけど相場より低い指し値なので競り負けやすい、という意味です。",
+          "強気に落としたい時は指し値を少し上げる、利益を守りたい時は推奨のまま。狙い次第で調整してくださいね😊"]] },
+    { k:["市場ってなに","仕入れ市場","販売市場","箱山","はこやま","会場","どの市場","市場の違い","市場を"],
+      a:[["市場は『どこで買って・どこで売るか』のことです😊",
+          "仕入れ市場＝YBAのどの形で買うか（横浜／大阪／箱山ロット など）。箱山（ロット）は1点あたりが安くなりやすいです。",
+          "販売市場＝どこで売るか（メルカリ／ラクマ／店頭 など）。切り替えると相場が変わって、粗利がどう動くか比べられますよ✨"]] },
+    { k:["想定売値","売値","いくらで売れ","販売価格","売れる値段","いくらで売る"],
+      a:[["想定売値は『メルカリでこれくらいで売れそう』という予想の販売価格です☺️",
+          "仕入れ相場をもとに、価格帯ごとの実売倍率をかけて出しています。あくまで“想定”なので、高額品や型番があるものはメルカリの売り切れ検索で実額も見ておくと安心です😊"]] },
+    { k:["判定","見送り","どれを買え","買っていい","買うべき","おすすめは","マーク"],
+      a:[["判定マークは、ざっくりの買いおすすめ度です😊",
+          "◎＝積極的に狙っていい／○＝妙味あり・指す価値あり／△＝薄利なので状態をよく見て／×＝基本は見送り（ロット狙い向き）",
+          "まずは◎○を中心に見ていくと、失敗が少ないですよ🔰"]] },
+    { k:["ブランド入れ","品目","大分類","入力","選び方","入れ方","打ち込","検索窓","どこに入れ"],
+      a:[["入力は上から順でOKです☺️",
+          "ブランドは欄に打つと候補が出ます（シャネル でも CHANEL でも大丈夫）。大分類（アパレル／靴／バッグ など）を選ぶと、品目のリストがそれに合わせて変わります。",
+          "あとはランクと市場を選んで、診断ボタンを押すだけですよ😊"]] },
+    { k:["送料","手数料","メルカリ手数料","販売手数料"],
+      a:[["粗利には、ちゃんとコストも引いてあります😊",
+          "メルカリの販売手数料10%と、サイズ別の送料（薄手の服は¥215、コート・ダウン・バッグなど大きいものは¥750 が目安）を引いた上での利益です。",
+          "なので出た粗利は、けっこう現実に近い手残りだと思ってくださいね✨"]] }
+  ];
+
+  /* B. 仕入れ・相場の基礎（YBA知見） */
+  var KISO=[
+    { k:["高く売れる","何が高い","高値","儲かるブランド","高いブランド","人気ブランド","高く売る"],
+      a:[["高く出やすいのは、やっぱりシャネルのツイードジャケットやワンピースですね👀 桁が違います。",
+          "共通するのは『年代が新しい・現行に近い』『素材がいい（カシミヤ・シルク・ファー・レザー）』『コラボ』『レア・新品未使用』。この要素があると強気でいけます🔥",
+          "逆にシンプル・無地・薄手・使用感ありは安くなりやすいです😊"]] },
+    { k:["安く仕入れ","狙い目","何を買え","安く買","仕入れのコツ","得する"],
+      a:[["安く狙うなら、シーズンオフの小物やマフラー系はけっこう安く落ちますよ😊",
+          "あと大事なのは『安く買う』より『自分（弊社）らしく高く売り切る』こと。可愛い写真とキーワードで、同じ物でも売り値は変わりますから✨",
+          "回転優先で、次の仕入れにお金を回していくのがコツです🔥"]] },
+    { k:["季節","夏物","冬物","いつ買","時期","シーズン","今買"],
+      a:[["季節でいうと、夏物は単価が低め、冬物・アウターの方が利益は出やすいです😊",
+          "相場は冬商戦の前（秋口）は高くなりがちで、春は比較的おとなしめ。大阪などイベントの日は少し高くなる傾向もあります。",
+          "ツールの仕入れ市場を切り替えると、その辺の高い／安いも少し反映していますよ✨"]] },
+    { k:["真贋","偽物","本物","コピー","見分け","フェイク","本物か"], s:"think",
+      a:[["真贋は本当に奥が深くて。。ここは中村さん（YBAのプロ）に直接教われるのが一番の近道です🥹",
+          "基本は、本物をたくさん見て・触って・タグの印字や年代の特徴を覚える、の反復ですね。",
+          "アパレルはバッグより難しいので、現地でどんどん質問して目を養うのがおすすめです😊"]] },
+    { k:["リサーチ","調べ方","相場の調べ","メルカリで調べ","実売","確かめ方","調べたい"], s:"think",
+      a:[["相場の確かめ方は、これが鉄板です🔍",
+          "メルカリで『ブランド名＋品目』を検索→『売り切れ』で絞る→『新しい順』で2ページ見る。上限と下限がつかめます。",
+          "販売中のライバルの写真やキーワードが弱ければ、こっちは強気の値段でも勝てますよ😎"]] }
+  ];
+
+  /* C. 雑談・応援（社員向け・やさしめ） */
+  var TALK=[
+    { k:["疲れた","つかれた","しんどい","むずかし","難し","不安","できるか","自信ない","こわい","緊張","ついていけ"], s:"think",
+      a:[["大丈夫ですよ〜、最初はみんなそうです☺️",
+          "このツールは、ひかるさんが迷わないように作ってあるので、まずは『サンプルで見る』から気楽に触ってみてください。",
+          "わからなくなったら、いつでも私に聞いてくださいね。一緒にやりましょ🥹"]] },
+    { k:["ありがとう","感謝","助かった","たすかった","わかった","できた","解決","なるほど"],
+      a:[["とんでもないです〜😊",
+          "またいつでも聞いてくださいね。ひかるさんが使いこなせるようになるの、楽しみにしてます✨"]] },
+    { k:["褒めて","ほめて","えらい","がんばった","頑張った","できてる？"],
+      a:[["ひかるさん、ちゃんと自分で調べて偉いです🥹",
+          "その姿勢があれば、仕入れの目もどんどん良くなりますよ。さすがです😊"]] },
+    { k:["だれ","誰","あなた","きみ","何者","自己紹介","くみこって"], s:"typing",
+      a:[["AIくみこです☺️ 森川くみこのAIクローンで、このツールのお手伝い係なのです",
+          "仕入れ・指し値・相場のことで困ったら、なんでも聞いてくださいね🔥"]] },
+    { k:["おはよう","おはよ"],
+      a:[["おはようございますー！☀️","今日もいい仕入れになりますように😊"]] },
+    { k:["こんにちは","こんにちわ","ちわ"],
+      a:[["こんにちはー☺️","なにか困ってることありますか？"]] },
+    { k:["こんばんは","こんばんわ","ばんは"],
+      a:[["こんばんはー🌙","遅くまでおつかれさまです。無理しないでくださいね😊"]] }
+  ];
+
+  var MISS=[
+    ["ごめんなさい、うまく汲み取れなかったです💦","このツールの使い方か、指し値・相場のことなら任せてください！『使い方おしえて』って聞いてもらってもOKです😊"],
+    ["ふむふむ。。もう少しだけ詳しく教えてもらえますか？☺️"],
+    ["おお、なるほど。。！それって、どの画面のことでしょう？（スプレッド診断／指し値提案／相場ブラウザ）👀"]
+  ];
+
+  var DEF=["peace","typing"];
+  function withStamp(lines,kind){
+    var hasImg=lines.some(function(l){ return /^\[\[IMG:/.test(l); });
+    if(hasImg){ return lines; }
+    var k=kind||DEF[Math.floor(Math.random()*DEF.length)];
+    return lines.concat(["[[IMG:"+k+"]]"]);
+  }
+  function core(t){
+    for(var i=0;i<TOOL.length;i++){ if(has(t,TOOL[i].k)){ return {lines:pick(TOOL[i].a), st:"typing"}; } }
+    for(var j=0;j<KISO.length;j++){ if(has(t,KISO[j].k)){ return {lines:pick(KISO[j].a), st:KISO[j].s||null}; } }
+    for(var m=0;m<TALK.length;m++){ if(has(t,TALK[m].k)){ return {lines:pick(TALK[m].a), st:TALK[m].s||null}; } }
+    return {lines:pick(MISS), st:null};
+  }
+  function reply(raw){
+    var t=String(raw||"").toLowerCase().trim();
+    if(!t){ return ["ん？どうしました？☺️"]; }
+    var r=core(t);
+    return withStamp(r.lines.slice(), r.st);
+  }
+  function welcome(){ return ["ひかるさーん！","[[IMG:peace]]","AIくみこです☺️ このツールで困ったら、なんでも聞いてくださいね🔥"]; }
+  return { reply:reply, welcome:welcome };
+})();
+
+/* ---------- UI ---------- */
+var HKEY="yba_km_hist_v1";
+var chat, inp, send, panel, launch, busy=false, hist=[], started=false;
+function nowTime(){ var d=new Date(); return ("0"+d.getHours()).slice(-2)+":"+("0"+d.getMinutes()).slice(-2); }
+function saveHist(){ try{ localStorage.setItem(HKEY, JSON.stringify(hist.slice(-120))); }catch(e){} }
+function mkAv(){ var a=document.createElement("div"); a.className="sav"; var im=document.createElement("img"); im.src="img/face.png?v=1"; im.alt=""; im.onerror=function(){ im.remove(); }; a.appendChild(im); return a; }
+function addBubble(who,text,noSave){
+  var row=document.createElement("div"); row.className="kmrow "+who;
+  if(who==="km"){ row.appendChild(mkAv()); }
+  var bub=document.createElement("div");
+  var tok=/^\[\[IMG:([a-z]+)\]\]$/.exec(String(text));
+  if(tok){
+    bub.className="kmbub pic";
+    var pic=document.createElement("img"); pic.src="img/"+tok[1]+".png?v=1"; pic.alt="くみこのスタンプ";
+    pic.onload=function(){ chat.scrollTop=chat.scrollHeight; };
+    pic.onerror=function(){ bub.className="kmbub"; bub.textContent="（スタンプを読み込めませんでした）"; };
+    bub.appendChild(pic);
+  }else{
+    bub.className="kmbub"; bub.textContent=String(text);
+  }
+  row.appendChild(bub); chat.appendChild(row); chat.scrollTop=chat.scrollHeight;
+  if(!noSave){ hist.push({w:who,t:text}); saveHist(); }
+}
+function showTyping(){
+  var row=document.createElement("div"); row.className="kmrow km typing"; row.appendChild(mkAv());
+  var b=document.createElement("div"); b.className="kmbub"; b.textContent="・・・"; row.appendChild(b);
+  chat.appendChild(row); chat.scrollTop=chat.scrollHeight; return row;
+}
+function botSay(lines){
+  var i=0; busy=true;
+  (function next(){
+    if(i>=lines.length){ busy=false; return; }
+    var tp=showTyping();
+    var wait=Math.min(420+String(lines[i]).length*16, 1300);
+    setTimeout(function(){ tp.remove(); addBubble("km",lines[i]); i++; setTimeout(next,220); }, wait);
+  })();
+}
+function submit(text){
+  if(busy){ return; }
+  var t=String(text||"").trim(); if(!t){ return; }
+  addBubble("me",t); inp.value=""; autoGrow();
+  botSay(KMH.reply(t));
+}
+function autoGrow(){ inp.style.height="auto"; inp.style.height=Math.min(inp.scrollHeight,90)+"px"; }
+function openPanel(){
+  panel.classList.add("on"); launch.style.display="none";
+  if(!started){
+    started=true;
+    var restored=false;
+    try{ var h=JSON.parse(localStorage.getItem(HKEY)||"[]"); if(h&&h.length){ h.forEach(function(m){ addBubble(m.w,m.t,true); }); hist=h; restored=true; } }catch(e){}
+    if(!restored){ botSay(KMH.welcome()); }
+  }
+  setTimeout(function(){ chat.scrollTop=chat.scrollHeight; },60);
+}
+function closePanel(){ panel.classList.remove("on"); launch.style.display="flex"; }
+function initKM(){
+  chat=document.getElementById("kmChat"); inp=document.getElementById("kmInp"); send=document.getElementById("kmSend");
+  panel=document.getElementById("kmPanel"); launch=document.getElementById("kmLaunch");
+  launch.addEventListener("click", openPanel);
+  document.getElementById("kmClose").addEventListener("click", closePanel);
+  send.addEventListener("click", function(){ submit(inp.value); });
+  inp.addEventListener("keydown", function(e){ if(e.key==="Enter"&&!e.shiftKey&&!e.isComposing){ e.preventDefault(); submit(inp.value); } });
+  inp.addEventListener("input", autoGrow);
+  document.getElementById("kmChips").addEventListener("click", function(e){ var b=e.target.closest("button"); if(b&&b.dataset.q){ if(!panel.classList.contains("on")) openPanel(); submit(b.dataset.q); } });
+}
+try{ initKM(); }catch(err){ try{ if(typeof dbg==="function") dbg("KM INIT ERR: "+(err&&err.message)); }catch(e){} }
 })();
 </script>
 
