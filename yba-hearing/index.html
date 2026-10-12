@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="format-detection" content="telephone=no">
+<title>業務効率化・AI活用アンケート｜株式会社Merone</title>
+<style>
+:root{
+  --bg:#eaf3fa; --bg2:#f1f7fb; --paper:#ffffff; --navy:#26405f; --navy2:#1d3149;
+  --pink:#cf8f9c; --pinkd:#bd7886; --pinkbg:#fbeef1; --blue:#7fb0d2; --blued:#5f97be;
+  --ink:#4a4446; --sub:#7d8792; --line:#dfe7ee; --ok:#5f97be;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html{background:var(--bg);}
+body{
+  background:linear-gradient(180deg,#eaf3fa 0%,#f1f7fb 60%,#fbeef1 100%); min-height:100vh;
+  color:var(--ink); line-height:1.85; letter-spacing:.01em; -webkit-text-size-adjust:100%; -webkit-overflow-scrolling:touch;
+  font-family:"Yu Gothic","YuGothic","游ゴシック","Hiragino Kaku Gothic ProN","Hiragino Sans",-apple-system,BlinkMacSystemFont,"Noto Sans JP",sans-serif;
+}
+.wrap{max-width:600px; margin:0 auto; padding:18px 16px 110px;}
+.top{padding:10px 4px 14px;}
+.brand{font-size:11px; font-weight:800; letter-spacing:.18em; color:var(--pinkd);}
+h1{font-size:21px; line-height:1.5; color:var(--navy2); margin-top:6px; word-break:auto-phrase; letter-spacing:.02em;}
+.lead{font-size:12.5px; color:var(--sub); margin-top:6px; font-weight:700;}
+.card{background:var(--paper); border:1px solid var(--line); border-radius:18px; padding:18px 18px; margin-top:12px;
+  box-shadow:0 12px 28px -20px rgba(29,49,73,.35);}
+.intro p{font-size:14px; color:var(--ink);}
+.intro p + p{margin-top:8px;}
+.intro .soft{font-size:12.5px; color:var(--sub); margin-top:10px; padding-top:10px; border-top:1px dashed var(--line);}
+.prog{position:sticky; top:0; z-index:5; padding:10px 0 6px; background:linear-gradient(180deg,#eaf3fa 75%,rgba(234,243,250,0));}
+.prog .pill{display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.95); border:1px solid var(--line); border-radius:999px; padding:8px 14px;
+  box-shadow:0 8px 20px -14px rgba(29,49,73,.35);}
+.prog .lbl{font-size:11.5px; font-weight:800; color:var(--navy); white-space:nowrap;}
+.prog .bar{flex:1; height:8px; border-radius:20px; background:#e6eef5; overflow:hidden;}
+.prog .fill{height:100%; width:0%; background:linear-gradient(90deg,var(--blue),var(--pink)); border-radius:20px; transition:width .3s;}
+.q{padding:16px 18px;}
+.q .no{display:inline-block; font-size:10.5px; font-weight:800; color:var(--pinkd); background:var(--pinkbg); border-radius:8px; padding:1px 9px; letter-spacing:.06em; margin-bottom:6px;}
+.q .no.req{color:#fff; background:var(--pinkd);}
+.q label.t, .q .t{display:block; font-size:14.5px; font-weight:800; color:var(--navy2); line-height:1.7; word-break:auto-phrase;}
+.q .hint{font-size:12px; color:var(--sub); margin:4px 0 8px;}
+.q.key{border:1.5px solid #f0d3da; background:linear-gradient(180deg,#fff,#fdf5f7);}
+.q.key .no{color:#fff; background:linear-gradient(135deg,#c76e85,#cf8f9c);}
+input[type=text], textarea, select{
+  width:100%; border:1.5px solid var(--line); background:#fcfdff; border-radius:12px; padding:11px 13px; font-size:16px; line-height:1.7;
+  color:var(--ink); font-family:inherit; -webkit-appearance:none; appearance:none; outline:none;
+}
+input[type=text]:focus, textarea:focus{border-color:var(--blue); box-shadow:0 0 0 3px rgba(127,176,210,.22);}
+textarea{min-height:92px; resize:vertical;}
+.opts{display:flex; flex-direction:column; gap:6px; margin-top:4px;}
+.opt{display:flex; align-items:flex-start; gap:10px; border:1.5px solid var(--line); border-radius:12px; padding:10px 12px; cursor:pointer; background:#fff; font-size:14.5px; color:var(--ink); line-height:1.6;}
+.opt input{flex:none; width:20px; height:20px; margin-top:2px; accent-color:var(--blued);}
+.opt.on{border-color:var(--blue); background:#f3f8fc;}
+.opt .other{flex:1;}
+.opt .other input[type=text]{margin-top:6px; padding:8px 11px; font-size:15px;}
+.submit{margin-top:18px; text-align:center;}
+.cta{width:100%; border:none; border-radius:999px; padding:17px 20px; font-size:17px; font-weight:800; color:#fff; cursor:pointer; font-family:inherit; letter-spacing:.04em;
+  background:linear-gradient(135deg,#c76e85,#cf8f9c); box-shadow:0 12px 26px -12px rgba(189,120,134,.7);}
+.cta:disabled{opacity:.6; cursor:default;}
+.note{font-size:12px; color:var(--sub); margin-top:10px;}
+.warn{display:none; font-size:13px; color:var(--pinkd); font-weight:800; margin-top:10px; text-align:center;}
+.warn.on{display:block;}
+.done{text-align:center; padding:28px 20px;}
+.done h2{font-size:19px; color:var(--navy2); margin-bottom:10px;}
+.done p{font-size:14px; color:var(--ink);}
+.done .rid{display:inline-block; margin-top:12px; font-size:12px; color:var(--sub); background:var(--bg2); border-radius:999px; padding:4px 14px;}
+.done .again{margin-top:18px; border:1.5px solid var(--line); background:#fff; color:var(--navy); border-radius:999px; padding:10px 20px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit;}
+.fail{border:1.5px solid #f0d3da; background:#fff8f9;}
+.fail h2{font-size:15.5px; color:var(--pinkd); margin-bottom:8px;}
+.fail p{font-size:13.5px;}
+.fail .bb{display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;}
+.fail button{flex:1; min-width:140px; border:none; border-radius:999px; padding:12px; font-size:14px; font-weight:800; cursor:pointer; font-family:inherit;}
+.fail .re{background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff;}
+.fail .cp{background:#eef2f6; color:var(--navy);}
+.fail .msg{font-size:12px; color:var(--sub); margin-top:8px;}
+footer{text-align:center; font-size:11px; color:var(--sub); margin-top:26px; letter-spacing:.08em;}
+#errbar{position:fixed; left:10px; right:10px; top:10px; z-index:2147483647; background:#fff; border:1.5px solid #f0d3da; border-radius:14px; padding:10px 12px; font-size:12.5px; color:var(--pinkd); font-weight:800; box-shadow:0 10px 24px rgba(29,49,73,.2); display:none;}
+#errbar.on{display:block;}
+#errbar button{margin-left:8px; border:none; background:var(--pinkd); color:#fff; border-radius:999px; padding:5px 12px; font-size:12px; font-weight:800; cursor:pointer; font-family:inherit;}
+#dbg{position:fixed; left:0; right:0; bottom:0; max-height:28vh; overflow:auto; pointer-events:none; background:rgba(29,49,73,.92); color:#dff0ff; font:11px/1.5 Menlo,monospace; padding:8px 10px; z-index:2147483646; display:none; white-space:pre-wrap;}
+#dbg.on{display:block;}
+@media (max-width:640px){
+  h1{font-size:19px;}
+  .wrap{padding:14px 14px 110px;}
+  .card{padding:16px 15px;}
+  .q{padding:15px 15px;}
+  br.mob{display:inline;}
+}
+br.mob{display:none;}
+/* バグ報告ツール */
+#bugL{position:fixed; left:12px; bottom:16px; z-index:59; background:rgba(255,255,255,.92); border:1px solid #dfe7ee; color:#8a97a5; font-size:10.5px; font-weight:800; border-radius:999px; padding:5px 12px; cursor:pointer; letter-spacing:.04em;}
+#bugM{position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(29,49,73,.55); display:none; align-items:center; justify-content:center; z-index:70; padding:24px;}
+#bugM.on{display:flex;}
+#bugM .bx{background:#fff; border-radius:20px; padding:22px 20px; max-width:360px; width:100%;}
+#bugM h3{font-size:14.5px; color:#1d3149; margin-bottom:8px;}
+#bugM textarea{min-height:100px;}
+#bugM .bb{display:flex; gap:8px; margin-top:12px;}
+#bugM button{flex:1; border:none; border-radius:999px; padding:11px; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit;}
+#bugM .s{background:linear-gradient(135deg,#c76e85,#cf8f9c); color:#fff;}
+#bugM .c{background:#eef2f6; color:#26405f;}
+#bugM .done2{display:none; font-size:12.5px; color:#bd7886; font-weight:800; margin-top:8px; text-align:center;}
+</style>
+</head>
+<body>
+<div id="errbar">表示に問題が起きました。<button type="button" onclick="location.reload()">ページを再読み込み</button></div>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">株式会社Merone</div>
+    <h1>業務効率化・AI活用についての<br class="mob">アンケート</h1>
+    <p class="lead">所要時間 約5分｜空欄があっても大丈夫です</p>
+  </header>
+
+  <section class="card intro">
+    <p>お忙しいところ恐れ入ります。弊社（株式会社Merone）は、御社の業務効率化・AI活用のご相談をお受けしており、現場で働いていらっしゃる皆さまのお声をお聞きしたく、このアンケートをお願いしております。</p>
+    <p>日々の作業の中で「ここに時間がかかっている」「これが自動になったら助かる」と感じていることを、思いついたままご記入いただけますと幸いです。</p>
+    <p class="soft">いただいた内容は業務改善の検討に使用いたします。途中で画面を閉じても、入力中の内容はこの端末に残ります。</p>
+  </section>
+
+  <div class="prog"><div class="pill"><span class="lbl">ご記入 <b id="cnt">0</b> / 12</span><div class="bar"><i class="fill" id="fill"></i></div></div></div>
+
+  <form id="f" novalidate autocomplete="off">
+    <section class="card q" data-q="name">
+      <span class="no">Q1 任意</span>
+      <label class="t" for="name">お名前</label>
+      <p class="hint">ニックネームや頭文字でも大丈夫です。</p>
+      <input type="text" id="name" name="name" placeholder="例：山田、Y.T、など">
+    </section>
+
+    <section class="card q" data-q="dept">
+      <span class="no req">Q2 必須</span>
+      <span class="t">所属されている部署</span>
+      <p class="hint">いちばん近いものをお選びください。</p>
+      <div class="opts" id="deptOpts">
+        <label class="opt"><input type="radio" name="dept" value="営業部（バイヤー・仕入れ）"><span>営業部（バイヤー・仕入れ）</span></label>
+        <label class="opt"><input type="radio" name="dept" value="販売管理部（小売・取引先）"><span>販売管理部（小売・取引先とのやりとり）</span></label>
+        <label class="opt"><input type="radio" name="dept" value="販売企画部（出品）"><span>販売企画部（出品・商品登録）</span></label>
+        <label class="opt"><input type="radio" name="dept" value="商品管理部（リペア・梱包・発送）"><span>商品管理部（リペア・梱包・発送）</span></label>
+        <label class="opt"><input type="radio" name="dept" value="経理・総務（ライブ販売管理含む）"><span>経理・総務（ライブ販売管理を含む）</span></label>
+        <label class="opt"><input type="radio" name="dept" value="その他"><span>その他・いくつかの部署をまたいでいる</span></label>
+      </div>
+      <div class="warn" id="deptWarn">部署だけお選びいただけますか。</div>
+    </section>
+
+    <section class="card q" data-q="role_detail">
+      <span class="no">Q3</span>
+      <label class="t" for="role_detail">主に担当されているお仕事</label>
+      <p class="hint">ひとことで大丈夫です。</p>
+      <input type="text" id="role_detail" name="role_detail" placeholder="例：楽天とヤフオクの出品、問い合わせ対応">
+    </section>
+
+    <section class="card q" data-q="flow">
+      <span class="no">Q4</span>
+      <label class="t" for="flow">1日のお仕事の流れ</label>
+      <p class="hint">朝から夕方まで、ざっくりで大丈夫です。</p>
+      <textarea id="flow" name="flow" placeholder="例：9時 入荷チェック → 10時 撮影 → 13時 出品登録 → 16時 問い合わせ対応"></textarea>
+    </section>
+
+    <section class="card q" data-q="slow">
+      <span class="no">Q5</span>
+      <label class="t" for="slow">いちばん時間がかかっている作業</label>
+      <p class="hint">だいたいの所要時間もあると助かります。</p>
+      <textarea id="slow" name="slow" placeholder="例：商品説明文を書く作業。1点10分 × 30点で、1日5時間くらい"></textarea>
+    </section>
+
+    <section class="card q" data-q="repeat">
+      <span class="no">Q6</span>
+      <label class="t" for="repeat">「毎回同じことを繰り返している」と感じる作業</label>
+      <textarea id="repeat" name="repeat" placeholder="例：同じ商品を複数のモールに登録し直す／毎日同じ集計を手で作る"></textarea>
+    </section>
+
+    <section class="card q" data-q="careful">
+      <span class="no">Q7</span>
+      <label class="t" for="careful">気をつかう・ミスが起きやすい・確認に時間がかかる作業</label>
+      <textarea id="careful" name="careful" placeholder="例：送り先の入力／在庫のダブり／価格の付け間違い"></textarea>
+    </section>
+
+    <section class="card q key" data-q="ai_wish">
+      <span class="no">Q8 いちばん聞きたいこと</span>
+      <label class="t" for="ai_wish">「これがAIや自動化で代わりにできたら嬉しい」と思うこと</label>
+      <p class="hint">思いつくまま、いくつでも。小さなことでも大歓迎です。</p>
+      <textarea id="ai_wish" name="ai_wish" placeholder="例：商品説明文を自動で書いてほしい／問い合わせの返信案を作ってほしい／売上集計を自動にしてほしい" style="min-height:120px"></textarea>
+    </section>
+
+    <section class="card q" data-q="tools">
+      <span class="no">Q9 複数選択可</span>
+      <span class="t">今よく使っているツール</span>
+      <div class="opts">
+        <label class="opt"><input type="checkbox" name="tools" value="Excel"><span>Excel</span></label>
+        <label class="opt"><input type="checkbox" name="tools" value="Googleスプレッドシート"><span>Googleスプレッドシート</span></label>
+        <label class="opt"><input type="checkbox" name="tools" value="出品管理システム（ワサビスイッチなど）"><span>出品管理システム（ワサビスイッチなど）</span></label>
+        <label class="opt"><input type="checkbox" name="tools" value="各モールの管理画面"><span>各モールの管理画面（楽天・ヤフオクなど）</span></label>
+        <label class="opt"><input type="checkbox" name="tools" value="LINE・チャット"><span>LINE・チャット（Chatwork・Slackなど）</span></label>
+        <label class="opt"><input type="checkbox" name="tools" value="メール"><span>メール</span></label>
+        <label class="opt"><input type="checkbox" name="tools" value="紙・手書き"><span>紙・手書き</span></label>
+        <label class="opt"><input type="checkbox" name="tools" value="電話・FAX"><span>電話・FAX</span></label>
+        <label class="opt"><input type="checkbox" name="tools" value="その他" id="toolsOtherCk"><span class="other">その他<input type="text" id="tools_other" name="tools_other" placeholder="ツール名"></span></label>
+      </div>
+    </section>
+
+    <section class="card q" data-q="analog">
+      <span class="no">Q10</span>
+      <label class="t" for="analog">紙・手書き・電話・FAXで残っている作業</label>
+      <p class="hint">あれば、お聞かせください。</p>
+      <textarea id="analog" name="analog" placeholder="例：検品結果を紙に書いてから入力している／取引先への連絡がFAX"></textarea>
+    </section>
+
+    <section class="card q" data-q="ai_exp">
+      <span class="no">Q11</span>
+      <span class="t">ChatGPTなどのAIツールを使ったことはありますか</span>
+      <div class="opts">
+        <label class="opt"><input type="radio" name="ai_exp" value="使ったことがない"><span>使ったことがない</span></label>
+        <label class="opt"><input type="radio" name="ai_exp" value="試したことはある"><span>試したことはある</span></label>
+        <label class="opt"><input type="radio" name="ai_exp" value="ときどき使っている"><span>ときどき使っている</span></label>
+        <label class="opt"><input type="radio" name="ai_exp" value="毎日のように使っている"><span>毎日のように使っている</span></label>
+      </div>
+    </section>
+
+    <section class="card q" data-q="concern">
+      <span class="no">Q12 複数選択可</span>
+      <span class="t">AIや自動化を取り入れるとしたら、心配なこと</span>
+      <div class="opts">
+        <label class="opt"><input type="checkbox" name="concern" value="覚えるのが大変そう"><span>覚えるのが大変そう</span></label>
+        <label class="opt"><input type="checkbox" name="concern" value="間違いが起きないか心配"><span>間違いが起きないか心配</span></label>
+        <label class="opt"><input type="checkbox" name="concern" value="自分の仕事がなくなるのでは"><span>自分の仕事がなくなるのでは、と感じる</span></label>
+        <label class="opt"><input type="checkbox" name="concern" value="お客さまの情報の扱い（セキュリティ）"><span>お客さまの情報の扱い（セキュリティ）</span></label>
+        <label class="opt"><input type="checkbox" name="concern" value="特にない"><span>特にない</span></label>
+        <label class="opt"><input type="checkbox" name="concern" value="その他" id="concernOtherCk"><span class="other">その他<input type="text" id="concern_other" name="concern_other" placeholder="ご自由に"></span></label>
+      </div>
+    </section>
+
+    <section class="card q" data-q="free">
+      <span class="no">最後に</span>
+      <label class="t" for="free">そのほか、伝えておきたいこと・ご要望</label>
+      <textarea id="free" name="free" placeholder="どんなことでも"></textarea>
+    </section>
+
+    <div class="submit">
+      <button type="submit" class="cta" id="btn">回答を送信する</button>
+      <div class="warn" id="subWarn"></div>
+      <p class="note">送信後に内容を直したい場合は、もう一度この画面から送信いただけます。</p>
+    </div>
+  </form>
+
+  <section class="card done" id="done" hidden>
+    <h2>ご回答ありがとうございました</h2>
+    <p>お忙しい中、お時間をいただきありがとうございました。<br>いただいたお声は大切に読ませていただき、業務改善の検討に活かしてまいります。</p>
+    <span class="rid" id="ridOut"></span><br>
+    <button type="button" class="again" id="again">別の方が回答する</button>
+  </section>
+
+  <section class="card fail" id="fail" hidden>
+    <h2>送信できませんでした</h2>
+    <p>通信の問題の可能性があります。ご記入いただいた回答はこの端末に残っていますので、電波の良い場所で「もう一度送信」をお試しいただけますと幸いです。</p>
+    <p>何度か試しても送れない場合は「回答をコピー」で文面をコピーし、事務所のご担当者さまへお送りいただけますと助かります。</p>
+    <div class="bb"><button type="button" class="re" id="retry">もう一度送信</button><button type="button" class="cp" id="copy">回答をコピー</button></div>
+    <div class="msg" id="failMsg"></div>
+  </section>
+
+  <footer>株式会社Merone</footer>
+</div>
+
+<div id="dbg"></div>
+
+<!-- バグ報告ツール -->
+<div id="bugL">不具合を報告</div>
+<div id="bugM"><div class="bx">
+  <h3>不具合・気になったことがあれば</h3>
+  <textarea id="bugT" placeholder="例）送信ボタンを押しても反応しませんでした（iPhone/Safari）"></textarea>
+  <div class="bb"><button type="button" class="c" id="bugC">閉じる</button><button type="button" class="s" id="bugS">送信する</button></div>
+  <div class="done2" id="bugD">届きました。ありがとうございます。</div>
+</div></div>
+
+<script>
+(function(){
+'use strict';
+var GAS = 'https://script.google.com/macros/s/AKfycbwjkkhZxu1g6MsmLlFM0SlaupY3cDNJVmPrbXtRkC1ju5QhyCEj0cCHDTYMP06uCHaZ/exec';
+var VER = '20261012b';
+var DRAFT_KEY = 'yba_survey_draft_v1', PEND_KEY = 'yba_survey_pending_v1';
+var P = new URLSearchParams(location.search);
+var DEBUG = P.get('debug') === '1';
+var $ = function(s){ return document.querySelector(s); };
+var dbg = $('#dbg');
+function log(){ var a = Array.prototype.slice.call(arguments).map(function(x){ return typeof x === 'string' ? x : JSON.stringify(x); }).join(' ');
+  try{ console.log('[survey]', a); }catch(e){} if (DEBUG){ dbg.classList.add('on'); dbg.textContent += new Date().toLocaleTimeString() + ' ' + a + '\n'; } }
+window.addEventListener('error', function(e){ log('ERR', e.message, (e.filename||'') + ':' + (e.lineno||'')); $('#errbar').classList.add('on'); });
+window.addEventListener('unhandledrejection', function(e){ log('REJ', e.reason && e.reason.message || String(e.reason)); });
+function ls(k, v){ try{ if (v === undefined) return localStorage.getItem(k); if (v === null) localStorage.removeItem(k); else localStorage.setItem(k, v); }catch(e){ log('ls', e.message); return null; } }
+function uuid(){ return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+var QS = ['name','dept','role_detail','flow','slow','repeat','careful','ai_wish','tools','analog','ai_exp','concern','free'];
+var form = $('#f'), started = Date.now();
+
+function read(){
+  var d = {};
+  d.name = $('#name').value.trim();
+  var dept = form.querySelector('input[name=dept]:checked'); d.dept = dept ? dept.value : '';
+  d.role_detail = $('#role_detail').value.trim();
+  ['flow','slow','repeat','careful','ai_wish','analog','free'].forEach(function(k){ d[k] = $('#' + k).value.trim(); });
+  d.tools = Array.prototype.map.call(form.querySelectorAll('input[name=tools]:checked'), function(i){ return i.value; });
+  d.tools_other = $('#tools_other').value.trim();
+  var ae = form.querySelector('input[name=ai_exp]:checked'); d.ai_exp = ae ? ae.value : '';
+  d.concern = Array.prototype.map.call(form.querySelectorAll('input[name=concern]:checked'), function(i){ return i.value; });
+  d.concern_other = $('#concern_other').value.trim();
+  return d;
+}
+function restore(d){
+  if (!d) return;
+  try{
+    $('#name').value = d.name || ''; $('#role_detail').value = d.role_detail || '';
+    ['flow','slow','repeat','careful','ai_wish','analog','free'].forEach(function(k){ $('#' + k).value = d[k] || ''; });
+    form.querySelectorAll('input[name=dept]').forEach(function(i){ i.checked = (i.value === d.dept); });
+    form.querySelectorAll('input[name=ai_exp]').forEach(function(i){ i.checked = (i.value === d.ai_exp); });
+    form.querySelectorAll('input[name=tools]').forEach(function(i){ i.checked = (d.tools || []).indexOf(i.value) >= 0; });
+    form.querySelectorAll('input[name=concern]').forEach(function(i){ i.checked = (d.concern || []).indexOf(i.value) >= 0; });
+    $('#tools_other').value = d.tools_other || ''; $('#concern_other').value = d.concern_other || '';
+  }catch(e){ log('restore', e.message); }
+}
+function filled(d){
+  var n = 0;
+  if (d.name) n++; if (d.dept) n++; if (d.role_detail) n++;
+  ['flow','slow','repeat','careful','ai_wish','analog','free'].forEach(function(k){ if (d[k]) n++; });
+  if (d.tools.length || d.tools_other) n++; if (d.ai_exp) n++; if (d.concern.length || d.concern_other) n++;
+  return Math.min(13, n);
+}
+function paint(){
+  var d = read(); var n = filled(d);
+  $('#cnt').textContent = Math.min(12, n); $('#fill').style.width = Math.round(Math.min(12, n) / 12 * 100) + '%';
+  form.querySelectorAll('.opt').forEach(function(o){ var i = o.querySelector('input'); o.classList.toggle('on', !!(i && i.checked)); });
+}
+var saveT = null;
+function saveDraft(){ clearTimeout(saveT); saveT = setTimeout(function(){ var d = read(); d._rid = rid; d._started = started; ls(DRAFT_KEY, JSON.stringify(d)); }, 250); }
+function answers(d){
+  var other = function(list, o){ var a = list.slice(); if (o){ var i = a.indexOf('その他'); if (i >= 0) a[i] = 'その他：' + o; else a.push('その他：' + o); } return a; };
+  return {
+    name: d.name, role: [d.dept, d.role_detail].filter(Boolean).join('｜'),
+    flow: d.flow, slow: d.slow, repeat: d.repeat, careful: d.careful, ai_wish: d.ai_wish,
+    tools: other(d.tools, d.tools_other), analog: d.analog, ai_exp: d.ai_exp, concern: other(d.concern, d.concern_other), free: d.free
+  };
+}
+function asText(a){
+  var L = [['お名前', a.name], ['部署・担当', a.role], ['1日の流れ', a.flow], ['時間がかかる作業', a.slow], ['繰り返し作業', a.repeat], ['気をつかう作業', a.careful],
+    ['AIに任せたいこと', a.ai_wish], ['使っているツール', (a.tools || []).join('、')], ['紙・電話・FAXの作業', a.analog], ['AI利用経験', a.ai_exp], ['心配なこと', (a.concern || []).join('、')], ['その他', a.free]];
+  return '【業務効率化・AI活用アンケート】\n' + L.map(function(x){ return x[0] + '：' + (x[1] || '（未記入）'); }).join('\n');
+}
+function post(payload, ms){
+  return new Promise(function(res, rej){
+    var ctl = ('AbortController' in window) ? new AbortController() : null;
+    var t = setTimeout(function(){ if (ctl) ctl.abort(); rej(new Error('timeout')); }, ms || 25000);
+    fetch(GAS, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload), signal: ctl ? ctl.signal : undefined })
+      .then(function(r){ return r.text().then(function(tx){ var j; try{ j = JSON.parse(tx); }catch(e){ throw new Error('bad response ' + r.status); } if (!j.ok) throw new Error(j.error || 'ng'); return j; }); })
+      .then(function(j){ clearTimeout(t); res(j); }, function(e){ clearTimeout(t); rej(e); });
+  });
+}
+var rid = null, sending = false;
+function show(id){ ['#f','#done','#fail'].forEach(function(s){ $(s).hidden = (s !== id); }); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+function submit(payload){
+  if (sending) return; sending = true;
+  var btn = $('#btn'); btn.disabled = true; btn.textContent = '送信しています…';
+  $('#retry').disabled = true; $('#failMsg').textContent = '';
+  ls(PEND_KEY, JSON.stringify(payload));
+  post(payload).then(function(j){
+    sending = false; ls(PEND_KEY, null); ls(DRAFT_KEY, null);
+    btn.disabled = false; btn.textContent = '回答を送信する'; $('#retry').disabled = false;
+    $('#ridOut').textContent = '受付番号：' + String(j.rid || payload.rid).slice(-8).toUpperCase();
+    show('#done'); log('sent', j.rid);
+  }).catch(function(e){
+    sending = false; btn.disabled = false; btn.textContent = '回答を送信する'; $('#retry').disabled = false;
+    $('#failMsg').textContent = '（詳細：' + (e && e.message || e) + '／' + new Date().toLocaleTimeString() + '）';
+    show('#fail'); log('fail', e && e.message);
+  });
+}
+form.addEventListener('submit', function(ev){
+  ev.preventDefault();
+  var d = read();
+  if (!d.dept){ $('#deptWarn').classList.add('on'); $('#deptOpts').scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+  $('#deptWarn').classList.remove('on');
+  var a = answers(d);
+  if (!QS.some(function(k){ return a[k === 'dept' ? 'role' : k] && String(a[k === 'dept' ? 'role' : k]).length; })) return;
+  if (!rid) rid = uuid();
+  submit({ type: 'survey', rid: rid, answers: a, meta: { ua: navigator.userAgent, url: location.href.split('?')[0], elapsedSec: Math.round((Date.now() - started) / 1000), ver: VER } });
+});
+$('#retry').addEventListener('click', function(){ var p = ls(PEND_KEY); if (!p){ show('#f'); return; } try{ submit(JSON.parse(p)); }catch(e){ show('#f'); } });
+$('#copy').addEventListener('click', function(){
+  var p = ls(PEND_KEY); var txt = ''; try{ txt = asText(JSON.parse(p).answers); }catch(e){ txt = asText(answers(read())); }
+  var done = function(){ $('#failMsg').textContent = 'コピーしました。LINEやメールに貼り付けてお送りいただけます。'; };
+  if (navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done, function(){ fallbackCopy(txt, done); }); } else fallbackCopy(txt, done);
+});
+function fallbackCopy(txt, done){ var ta = document.createElement('textarea'); ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.focus(); ta.select(); try{ document.execCommand('copy'); done(); }catch(e){ alert(txt); } ta.remove(); }
+$('#again').addEventListener('click', function(){ form.reset(); rid = null; started = Date.now(); ls(DRAFT_KEY, null); paint(); show('#f'); });
+form.addEventListener('input', function(){ paint(); saveDraft(); });
+form.addEventListener('change', function(ev){
+  paint(); saveDraft();
+  if (ev.target && ev.target.name === 'dept' && ev.target.checked) $('#deptWarn').classList.remove('on');
+});
+form.querySelectorAll('input[type=text]').forEach(function(i){ i.addEventListener('keydown', function(ev){ if (ev.key === 'Enter') ev.preventDefault(); }); });
+$('#tools_other').addEventListener('input', function(){ if (this.value.trim()) $('#toolsOtherCk').checked = true; paint(); });
+$('#concern_other').addEventListener('input', function(){ if (this.value.trim()) $('#concernOtherCk').checked = true; paint(); });
+
+// 起動
+try{
+  var draft = null; try{ draft = JSON.parse(ls(DRAFT_KEY) || 'null'); }catch(e){ draft = null; }
+  if (draft){ restore(draft); rid = draft._rid || null; started = draft._started || Date.now(); }
+  var pend = ls(PEND_KEY);
+  if (pend){ show('#fail'); $('#failMsg').textContent = '前回の回答がまだ送信されていません。「もう一度送信」をお試しください。'; }
+  else show('#f');
+}catch(e){ log('boot', e.message); }
+finally{ paint(); }
+log('ready', VER, GAS.indexOf('__') === 0 ? 'GAS URL未設定' : 'GAS ok');
+
+// バグ報告
+(function(){
+  var U = 'https://inrvprlyobghviklulcv.supabase.co/rest/v1/ailab_notes';
+  var K = 'sb_publishable_ZrCNcsRHMci-l7Fns8QtIA_X22XZGJp';
+  var M = $('#bugM');
+  $('#bugL').onclick = function(){ M.classList.add('on'); };
+  $('#bugC').onclick = function(){ M.classList.remove('on'); $('#bugD').style.display = 'none'; };
+  $('#bugS').onclick = function(){
+    var t = $('#bugT').value.trim(); if (!t){ $('#bugT').focus(); return; }
+    var btn = this; btn.disabled = true;
+    var done = function(){ $('#bugD').style.display = 'block'; $('#bugT').value = ''; btn.disabled = false; setTimeout(function(){ M.classList.remove('on'); $('#bugD').style.display = 'none'; }, 1800); };
+    fetch(U, { method: 'POST', headers: { apikey: K, Authorization: 'Bearer ' + K, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ member_id: 'bug_yba-hearing', member_name: '業務効率化アンケート', mood: 'バグ報告', worry: t, want: location.href.slice(0, 180) + ' ／ ' + navigator.userAgent.slice(0, 140) }) })
+      .then(function(){ done(); }).catch(function(){ btn.disabled = false; alert('送信できませんでした。通信環境をご確認ください。'); });
+  };
+})();
+})();
+</script>
+</body>
+</html>
